@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Autobahn.js</title>
+</head>
+
+<body>
+	<script src="https://static.rasc.ch/autobahn-17.5.2.min.js"></script>
+	<script>
+		var serverPathUrl = window.location.pathname.substring(0, window.location.pathname.lastIndexOf('/') + 1);
+		var wsURL = (window.location.protocol == "https:" ? "wss://" : "ws://") + window.location.host + serverPathUrl + "wamp";
+	
+		var connection = new autobahn.Connection({
+			url: wsURL
+		});
+	
+		connection.onopen = function(session, details) {
+			console.log('onopen', session, details);
+
+			// subscribe to a topic
+			function onevent(args) {
+				console.log("Event:", args[0]);
+			}
+			session.subscribe('com.myapp.hello', onevent);
+
+			session.subscribe('from_server', function(args) {
+				console.log('from_server: ', args);
+			});
+
+			//register a remote procedure
+			function add2(args) {
+				return args[0] + args[1];
+			}
+			session.register('com.myapp.add2', add2);
+
+			setTimeout(function() {
+				// publish an event
+				session.publish('com.myapp.hello', [ 'Hello, world!' ], {}, {
+					exclude_me: false
+				});
+
+				session.call('add', null, {
+					"a": 3,
+					"b": 10
+				}).then(function(result) {
+					console.log("Result from add:", result);
+				});
+
+				//call a remote procedure
+				session.call('com.myapp.add2', [ 2, 3 ]).then(function(res) {
+					console.log("Result:", res);
+				});
+			}, 1000);
+		};
+
+		connection.onclose = function(reason, details) {
+			console.log('onclose', reason, details);
+		}
+
+		connection.open();
+
+		/*
+		setTimeout(function() {
+			connection.close();
+		}, 10000);
+		 */
+	</script>
+</body>
+</html>

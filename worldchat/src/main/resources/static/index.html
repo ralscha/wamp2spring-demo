@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<link rel="icon" type="image/x-icon" href="favicon.ico" />
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+		<title>World Chat</title>
+
+		<!-- CSS -->
+		<link rel="stylesheet" type="text/css" href="css/reset.css" />
+		<link rel="stylesheet" type="text/css" href="css/main.css" />
+		<link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
+		<link href="https://fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet">
+
+		<!-- JS -->
+		<script src="https://static.rasc.ch/autobahn-17.5.2.min.js"></script>
+		<script src="js/languages.js"></script>
+		<script src="js/main.js"></script>
+	</head>
+	<body>
+		<div class="header">
+			<a href="/"> <img class="logo" alt="logo" src="assets/logo.png" /></a>
+			<div class="settings-button" onclick="openSettings()"></div>
+		</div>
+		<div class="chat-area" onscroll="setScroll()"></div>
+		<div class="chat-input-area">
+			<input type="text" class="chat-input" placeholder="Don't be a stranger, say something!" onkeypress="checkForSend(event)"/>
+			<div class="chat-button" onclick="postChat()">Send</div>
+		</div>
+
+		<div class="overlay"></div>
+		<div class="settings-window">
+			<p class="settings-label">Username</p> <span class="error-text"></span>
+			<input type="text" class="username-input" placeholder="DankMemes1738" onclick="this.select();"/>
+
+			<p class="settings-label" style="margin-top: 15px;">Icon</p>
+			<hr />
+			<ul class="icon-list">
+				<li><img class="icon-selector" onclick="selectIcon(this)" alt="Avatar Icon" data-icon-name="guy1.png"  src="assets/guy1.png"  /></li>
+				<li><img class="icon-selector" onclick="selectIcon(this)" alt="Avatar Icon" data-icon-name="guy2.png"  src="assets/guy2.png"  /></li>
+				<li><img class="icon-selector" onclick="selectIcon(this)" alt="Avatar Icon" data-icon-name="girl1.png" src="assets/girl1.png" /></li>
+				<li><img class="icon-selector" onclick="selectIcon(this)" alt="Avatar Icon" data-icon-name="girl2.png" src="assets/girl2.png" /></li>
+			</ul>
+
+			<table>
+				<tr>
+					<td>
+						<p class="settings-label" style="clear: both; margin-top: 5px;">Translate incoming?</p>
+					</td>
+					<td>
+						<p class="settings-label" id="lang-label">Language</p>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<span class="translation-checkbox"><input type="checkbox" name="Translate" value="Yes"/>Yes</span>
+					</td>
+					<td>
+						<select class="language-select" onchange="selectLanguage(this)"></select>
+					</td>
+				</tr>
+			</table>
+
+			<p class="help-text help-text-small">For help type<br />/help in chat</p>
+			<p class="help-text">For more information, <br />type /help in the chat window</p>
+
+			<div class="options-button cancel-button" onclick="closeSettings()">Cancel</div>
+			<div class="options-button ok-button" onclick="applySettings()">Ok</div>
+		</div>
+	</body>
+</html>
