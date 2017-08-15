@@ -2,11 +2,19 @@ package ch.rasc.wamp2spring.demo;
 
 public class ChatUser {
 
+	private String id;
+
 	private String name;
 
 	private String icon;
 
-	private String lang;
+	public String getId() {
+		return this.id;
+	}
+
+	public void setId(String id) {
+		this.id = id;
+	}
 
 	public String getName() {
 		return this.name;
@@ -22,14 +30,6 @@ public class ChatUser {
 
 	public void setIcon(String icon) {
 		this.icon = icon;
-	}
-
-	public String getLang() {
-		return this.lang;
-	}
-
-	public void setLang(String lang) {
-		this.lang = lang;
 	}
 
 }

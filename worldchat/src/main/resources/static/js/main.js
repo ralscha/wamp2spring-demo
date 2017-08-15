@@ -1,4 +1,16 @@
+function guid() {
+  return 'U' + s4() + s4() + s4() + s4() +
+    s4() + s4() + s4() + s4();
+}
+
+function s4() {
+  return Math.floor((1 + Math.random()) * 0x10000)
+    .toString(16)
+    .substring(1);
+}
+
 var user = {
+	id: guid(),
 	name: "",
 	icon: "guy1.png",
 	lang: "en"
@@ -6,11 +18,9 @@ var user = {
 
 var languageChanged = false, iconChanged = false, nameChanged = false;
 
-var userList = [];
+var connectedUsers = {};
 
 var shouldScroll = true, shouldTranslate = false;
-
-var CHAT_NORMAL = "NORMAL", CHAT_SPECIAL = "SPECIAL";
 
 var digits = "0123456789";
 
@@ -60,28 +70,32 @@ var connection = new autobahn.Connection({
 	url: wsURL
 });
 connection.onopen = function(session, details) {
-	session.subscribe('msg.en', handleMsg).then(function(subscription) {
+	wsSession = session;
+	
+	wsSession.subscribe('msg.en', handleMsg).then(function(subscription) {
 		currentMsgSubscription = subscription;
 	}, function(error) {
 		console.log('subscription error: ', error);
 	});
 	
-	session.subscribe('special', function(arg) {
+	wsSession.subscribe('special', function(arg) {
 		handleSpecial(arg[0]);
 	});
-	session.subscribe('icon.changed', function(arg) {
-		handleChangeIcon(arg[0]);
+	
+	wsSession.subscribe('icon.changed', function(arg) {
+		handleChangeIcon(arg[0], arg[1]);
 	});
-	session.subscribe('name.changed', function(arg, argkw) {
-		handleChangeName(argkw);
+	
+	wsSession.subscribe('name.changed', function(arg) {
+		handleChangeName(arg[0], arg[1]);
 	});
 
-	session.call('connect', [ user ]).then(function(result) {
-		session.call('username.list').then(function(users) {
-			userList = users;
+	wsSession.call('connect', [ {id:user.id, name:user.name, icon:user.icon} ]).then(function(result) {
+		wsSession.call('list.users').then(function(users) {
+			connectedUsers = users;
 		});
 	});
-	wsSession = session;
+	
 };
 connection.open();
 
@@ -104,10 +118,9 @@ function postChat() {
 	var msg = {
 		content: content,
 		ts: new Date().getTime(),
-		icon: user.icon,
-		name: user.name,
+		userId: user.id,
 		lang: user.lang,
-		type: (content[0] == "/" ? CHAT_SPECIAL : CHAT_NORMAL)
+		type: (content[0] == "/" ? 'S' : 'N')
 	}
 
 	wsSession.call('send', [msg]);
@@ -120,9 +133,7 @@ function checkForSpecialMessage(msg) {
 		var msg = {
 			content: helpText,
 			ts: new Date().getTime(),
-			icon: "robot.png",
-			name: "HelpBot",
-			type: CHAT_NORMAL
+			userId: 'HelpBot'
 		}
 
 		updateChatUI(msg);
@@ -142,46 +153,50 @@ function handleSpecial(msg) {
 	generateSpecialMessage('<span style="color: #48b19b">' + msg.name + '</span> ' + msg.emote);
 }
 
-function handleChangeIcon(changedUser) {
-	var usernameList = document.body.querySelectorAll('.user-name-display');
-	var uiIconList = document.body.querySelectorAll('.user-icon');
+function handleChangeIcon(userId, icon) {
+	var uiIconList = document.body.querySelectorAll('.user-icon.'+userId);
 
-	for (var i = 0; i < usernameList.length; i++) {
-		if (usernameList[i].textContent == changedUser.name) {
-			uiIconList[i].src = "../assets/" + changedUser.icon;
-		}
+	for (var i = 0; i < uiIconList.length; i++) {
+		uiIconList[i].src = "../assets/" + icon;		
 	}
+	
+	wsSession.call('list.users').then(function(users) {
+		connectedUsers = users;
+	});	
 }
 
-function handleChangeName(nameChange) {
-	var usernameList = document.body.querySelectorAll('.user-name-display');
+function handleChangeName(userId, name) {
+	var usernameList = document.body.querySelectorAll('.user-name-display.'+userId);
 
 	for (var i = 0; i < usernameList.length; i++) {
-		if (usernameList[i].textContent == nameChange.oldName) {
-			usernameList[i].textContent = nameChange.newName;
-		}
+		usernameList[i].textContent = name;
 	}
 
-	for (var i = 0; i < userList.length; i++) {
-		if (userList[i] == nameChange.oldName) {
-			userList[i] = nameChange.newName;
-			break;
-		}
-	}
+	wsSession.call('list.users').then(function(users) {
+		connectedUsers = users;
+	});
 
-	if (nameChange.oldName == user.name) {
-		user.name = nameChange.newName;
-	}
 }
 
 function updateChatUI(msg) {
+	var msgUser;
+	if (msg.userId === 'HelpBot') {
+		msgUser = {
+			name: 'HelpBot',
+			icon: 'robot.png'
+		};
+	}
+	else {
+		msgUser = connectedUsers[msg.userId];
+	}
+	
 	var chatArea = document.getElementsByClassName('chat-area')[0];
 
 	var chatBoxContainer = document.createElement('div');
 	chatBoxContainer.className = "chat-box-container";
 
 	var chatBox = document.createElement('div');
-	chatBox.className = "chat-box" + ((msg.name == user.name) ? " chat-box-own" : "");
+	chatBox.className = "chat-box" + ((msgUser.name == user.name) ? " chat-box-own" : "");
 	chatBoxContainer.appendChild(chatBox);
 
 	var chatTextBox = document.createElement('div');
@@ -201,8 +216,8 @@ function updateChatUI(msg) {
 	chatMetadataBox.appendChild(chatTime);
 
 	var userNameDisplay = document.createElement('p');
-	userNameDisplay.className = "user-name-display";
-	userNameDisplay.textContent = msg.name;
+	userNameDisplay.className = "user-name-display " + msgUser.id;
+	userNameDisplay.textContent = msgUser.name;
 	chatMetadataBox.appendChild(userNameDisplay);
 
 	var chatDivider = document.createElement('hr');
@@ -215,18 +230,13 @@ function updateChatUI(msg) {
 
 	var chatContentText = document.createElement('p');
 	chatContentText.className = "chat-content-text";
-	if (msg.name == "HelpBot") {
-		chatContentText.innerHTML = msg.content;
-	}
-	else {
-		chatContentText.innerHTML = msg.content;
-	}
+	chatContentText.innerHTML = msg.content;
 	chatContentBox.appendChild(chatContentText);
 
 	var userIcon = document.createElement('img');
 	userIcon.setAttribute('alt', 'User Icon');
-	userIcon.className = "user-icon";
-	userIcon.src = "../assets/" + msg.icon;
+	userIcon.className = "user-icon " + msgUser.id;
+	userIcon.src = "../assets/" + msgUser.icon;
 	chatBox.appendChild(userIcon);
 
 	chatArea.appendChild(chatBoxContainer);
@@ -274,24 +284,10 @@ function setScroll() {
 }
 
 function generateSpecialMessage(msg) {
-	if (msg.indexOf("disconnected") != -1) {
-		var username = msg.substring(msg.indexOf('>') + 1, msg.indexOf('</'));
-		if (username == user.name)
-			return;
-		else {
-			for (var i = 0; i < userList.length; i++) {
-				if (userList[i] == username) {
-					userList.splice(i, 1);
-					break;
-				}
-			}
-		}
-	}
-	else if (msg.indexOf("connected") != -1) {
-		var username = msg.substring(msg.indexOf('>') + 1, msg.indexOf('</'));
-		if (username != user.name) {
-			userList.push(username);
-		}
+	if (msg.indexOf("disconnected") !== -1 || msg.indexOf("connected") !== -1) {
+		wsSession.call('list.users').then(function(users) {
+			connectedUsers = users;
+		});
 	}
 
 	var chatArea = document.getElementsByClassName('chat-area')[0];
@@ -370,13 +366,23 @@ function applySettings() {
 	if (selectedIcon != user.icon) {
 		user.icon = selectedIcon;
 		iconChanged = true;
-		wsSession.call('change.icon', [ selectedIcon ]);
+
+		wsSession.publish('icon.changed', [ user.id, user.icon ]);
+		handleChangeIcon(user.id, user.icon);
 	}
 
 	var username = document.getElementsByClassName('username-input')[0].value;
 	if (username != user.name) {
 		var errorText = document.getElementsByClassName('error-text')[0];
-		if (userList.indexOf(username) != -1 || username == "HelpBot") {
+		
+		var usernameAlreadyTaken = false;
+		Object.keys(connectedUsers).forEach(function(id) {
+			if (username === connectedUsers[id].name) {
+				usernameAlreadyTaken = true;
+			}
+		});
+				
+		if (usernameAlreadyTaken || username == "HelpBot") {
 			errorText.textContent = "- Username is already taken";
 			errorText.style.display = "inline";
 		}
@@ -386,7 +392,9 @@ function applySettings() {
 		}
 		else {
 			nameChanged = true;
-			wsSession.call('change.name', [ username ]);
+			user.name = username;
+			wsSession.publish('name.changed', [ user.id, user.name ]);
+			handleChangeName(user.id, user.name);
 			closeSettings();
 		}
 	}

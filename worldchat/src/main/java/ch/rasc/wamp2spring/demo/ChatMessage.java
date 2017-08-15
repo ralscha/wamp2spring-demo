@@ -4,16 +4,11 @@ import javax.annotation.Nonnull;
 
 public class ChatMessage {
 
-	public enum ChatMessageType {
-		NORMAL, SPECIAL
-	}
-
 	private long ts;
-	private String icon;
-	private String name;
+	private String userId;
 	private String lang;
 	private String content;
-	private ChatMessageType type;
+	private String type;
 
 	public long getTs() {
 		return this.ts;
@@ -23,20 +18,20 @@ public class ChatMessage {
 		this.ts = ts;
 	}
 
-	public String getIcon() {
-		return this.icon;
+	public String getUserId() {
+		return this.userId;
 	}
 
-	public void setIcon(String icon) {
-		this.icon = icon;
+	public void setUserId(String userId) {
+		this.userId = userId;
 	}
 
-	public String getName() {
-		return this.name;
+	public String getType() {
+		return this.type;
 	}
 
-	public void setName(String name) {
-		this.name = name;
+	public void setType(String type) {
+		this.type = type;
 	}
 
 	public String getLang() {
@@ -55,31 +50,15 @@ public class ChatMessage {
 		this.content = content;
 	}
 
-	public ChatMessageType getType() {
-		return this.type;
-	}
-
-	public void setType(ChatMessageType type) {
-		this.type = type;
-	}
-
 	@Nonnull
 	public ChatMessage copyWithContent(String translatedMsg) {
 		ChatMessage msg = new ChatMessage();
 		msg.setContent(translatedMsg);
-		msg.setIcon(this.getIcon());
 		msg.setLang(this.getLang());
-		msg.setName(this.getName());
+		msg.setUserId(this.getUserId());
 		msg.setTs(this.getTs());
 		msg.setType(this.getType());
 		return msg;
-	}
-
-	@Override
-	public String toString() {
-		return "ChatMessage [ts=" + this.ts + ", icon=" + this.icon + ", name="
-				+ this.name + ", lang=" + this.lang + ", content=" + this.content
-				+ ", type=" + this.type + "]";
 	}
 
 }

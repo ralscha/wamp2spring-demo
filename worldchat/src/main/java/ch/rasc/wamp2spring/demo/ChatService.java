@@ -2,12 +2,9 @@ package ch.rasc.wamp2spring.demo;
 
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.LinkedHashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
 
@@ -15,8 +12,8 @@ import org.springframework.context.event.EventListener;
 import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.stereotype.Service;
 
-import ch.rasc.wamp2spring.demo.ChatMessage.ChatMessageType;
 import ch.rasc.wampspring.WampPublisher;
+import ch.rasc.wampspring.annotation.WampListener;
 import ch.rasc.wampspring.annotation.WampProcedure;
 import ch.rasc.wampspring.event.WampDisconnectEvent;
 import ch.rasc.wampspring.event.WampSubscriptionCreatedEvent;
@@ -50,12 +47,11 @@ public class ChatService {
 
 	private final TranslateService translateService;
 
-	private final Set<ChatUser> users = new LinkedHashSet<>();
-
 	private final Set<String> subscribedLanguages = new HashSet<>();
 
-	private final Map<Long, ChatUser> connectedUsers = new HashMap<>();
-
+	private final Map<String, ChatUser> connectedUsers = new HashMap<>();
+	private final Map<Long, String> wampSessionToUserId = new HashMap<>();
+	
 	public ChatService(WampPublisher wampPublisher, TranslateService translateService) {
 		this.wampPublisher = wampPublisher;
 		this.translateService = translateService;
@@ -71,10 +67,13 @@ public class ChatService {
 
 	@EventListener
 	public void disconnect(WampDisconnectEvent event) {
-		ChatUser user = this.connectedUsers.remove(event.getWampSessionId());
-		if (user != null) {
-			this.wampPublisher.publishToAll("special",
-					new SpecialMessage(user.getName(), "disconnected"));
+		String userId = this.wampSessionToUserId.get(event.getWampSessionId());
+		if (userId != null) {
+			ChatUser user = this.connectedUsers.remove(userId);
+			if (user != null) {
+				this.wampPublisher.publishToAll("special",
+						new SpecialMessage(user.getName(), "disconnected"));
+			}
 		}
 	}
 
@@ -88,21 +87,22 @@ public class ChatService {
 
 	@WampProcedure("connect")
 	public void connect(ChatUser user, @Header("WAMP_SESSION_ID") long wampSessionId) {
-		this.connectedUsers.put(wampSessionId, user);
+		this.wampSessionToUserId.put(wampSessionId, user.getId());
+		this.connectedUsers.put(user.getId(), user);
 
 		this.wampPublisher.publishToAll("special",
 				new SpecialMessage(user.getName(), "connected"));
 
 	}
 
-	@WampProcedure("username.list")
-	public List<String> listUsers() {
-		return this.users.stream().map(ChatUser::getName).collect(Collectors.toList());
+	@WampProcedure("list.users")
+	public Map<String, ChatUser> listUsers() {
+		return this.connectedUsers;
 	}
 
 	@WampProcedure("send")
 	public void sendMessage(ChatMessage message) {
-		if (message.getType() == ChatMessageType.NORMAL) {
+		if (message.getType().equals("N")) {
 			for (String lang : this.subscribedLanguages) {
 				if (message.getLang().equals(lang)) {
 					this.wampPublisher.publishToAll("msg." + lang, message);
@@ -120,25 +120,19 @@ public class ChatService {
 		}
 	}
 
-	@WampProcedure("change.icon")
-	public void changeIcon(String icon, @Header("WAMP_SESSION_ID") long wampSessionId) {
-		ChatUser user = this.connectedUsers.get(wampSessionId);
+	@WampListener("icon.changed")
+	public void iconChanged(String userId, String icon) {
+		ChatUser user = this.connectedUsers.get(userId);
 		if (user != null) {
-			user.setIcon(icon);
-			this.wampPublisher.publishToAll("icon.changed", user);
+			user.setIcon(icon);			
 		}
 	}
 
-	@WampProcedure("change.name")
-	public void changeName(String newName,
-			@Header("WAMP_SESSION_ID") long wampSessionId) {
-		ChatUser user = this.connectedUsers.get(wampSessionId);
+	@WampListener("name.changed")
+	public void nameChanged(String userId, String name) {
+		ChatUser user = this.connectedUsers.get(userId);
 		if (user != null) {
-			Map<String, String> nameChange = new HashMap<>();
-			nameChange.put("oldName", user.getName());
-			nameChange.put("newName", newName);
-			user.setName(newName);
-			this.wampPublisher.publishToAll("name.changed", nameChange);
+			user.setName(name);			
 		}
 	}
 
@@ -150,24 +144,32 @@ public class ChatService {
 	private SpecialMessage generateSpecialMessage(ChatMessage msg) {
 		switch (msg.getContent()) {
 		case "/sit":
-			return new SpecialMessage(msg.getName(),
+			return new SpecialMessage(getUserName(msg.getUserId()),
 					sitEmotes[randBetween(0, sitEmotes.length - 1)]);
 		case "/laugh":
-			return new SpecialMessage(msg.getName(),
+			return new SpecialMessage(getUserName(msg.getUserId()),
 					laughEmotes[randBetween(0, laughEmotes.length - 1)]);
 		case "/yawn":
-			return new SpecialMessage(msg.getName(),
+			return new SpecialMessage(getUserName(msg.getUserId()),
 					yawnEmotes[randBetween(0, yawnEmotes.length - 1)]);
 		case "/hide":
-			return new SpecialMessage(msg.getName(),
+			return new SpecialMessage(getUserName(msg.getUserId()),
 					hideEmotes[randBetween(0, hideEmotes.length - 1)]);
 		case "/scream":
-			return new SpecialMessage(msg.getName(),
+			return new SpecialMessage(getUserName(msg.getUserId()),
 					screamEmotes[randBetween(0, screamEmotes.length - 1)]);
 		default:
-			return new SpecialMessage(msg.getName(),
+			return new SpecialMessage(getUserName(msg.getUserId()),
 					"tried to do an emote that doesn't exist. Everyone point and laugh at them!");
 		}
+	}
+	
+	private String getUserName(String id) {
+		ChatUser chatUser = this.connectedUsers.get(id);
+		if (chatUser != null) {
+			return chatUser.getName();
+		}
+		return "";
 	}
 
 }
