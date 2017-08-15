@@ -4,7 +4,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.web.socket.server.HandshakeHandler;
 
-import ch.rasc.wampspring.config.PreferJsonHandshakeHandler;
+import ch.rasc.wampspring.config.PreferCborHandshakeHandler;
 import ch.rasc.wampspring.config.WampConfiguration;
 
 @SpringBootApplication
@@ -17,6 +17,7 @@ public class DemoApplication extends WampConfiguration {
 
 	@Override
 	protected HandshakeHandler getHandshakeHandler() {
-		return new PreferJsonHandshakeHandler();
+		// return new PreferJsonHandshakeHandler();
+		return new PreferCborHandshakeHandler();
 	}
 }

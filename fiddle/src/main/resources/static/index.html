@@ -6,15 +6,48 @@
 </head>
 
 <body>
-	<script src="https://static.rasc.ch/autobahn-17.5.2.min.js"></script>
+	<script src="https://static.rasc.ch/autobahn-17.5.2.js"></script>
+	<script src="cbor.js"></script>
 	<script>
 		var serverPathUrl = window.location.pathname.substring(0, window.location.pathname.lastIndexOf('/') + 1);
 		var wsURL = (window.location.protocol == "https:" ? "wss://" : "ws://") + window.location.host + serverPathUrl + "wamp";
-	
+		
+		function CBORSerializer() {
+			this.SERIALIZER_ID = 'cbor';
+			this.BINARY = true;
+			this.newid = function() {
+				   return Math.floor(Math.random() * 9007199254740992);
+			}
+		}
+
+		CBORSerializer.prototype.serialize = function(obj) {
+			try {
+				return CBOR.encode(obj);
+			}
+			catch (e) {
+				autobahn.log.warn('CBOR encoding error', e);
+				throw e;
+			}
+		};
+
+		CBORSerializer.prototype.unserialize = function(payload) {
+			try {
+				return CBOR.decode(payload);
+			}
+			catch (e) {
+				autobahn.log.warn('CBOR decoding error', e);
+				throw e;
+			}
+		};
+
 		var connection = new autobahn.Connection({
-			url: wsURL
+			url: wsURL,
+			type: 'websocket',
+			serializers: [ new CBORSerializer() ],
+			protocols: [ 'wamp.2.cbor' ],
+			realm: 'test'
 		});
-	
+
 		connection.onopen = function(session, details) {
 			console.log('onopen', session, details);
 
