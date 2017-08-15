@@ -47,13 +47,19 @@
 			<artifactId>google-auth-library-credentials</artifactId>
 			<version>0.7.1</version>
 		</dependency>
-		
+
+		<dependency>
+			<groupId>com.googlecode.owasp-java-html-sanitizer</groupId>
+			<artifactId>owasp-java-html-sanitizer</artifactId>
+			<version>20170515.1</version>
+		</dependency>
+
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-configuration-processor</artifactId>
 			<optional>true</optional>
 		</dependency>
-		
+
 	</dependencies>
 	<build>
 		<plugins>

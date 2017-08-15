@@ -8,6 +8,8 @@ import java.util.Set;
 
 import javax.annotation.Nonnull;
 
+import org.owasp.html.PolicyFactory;
+import org.owasp.html.Sanitizers;
 import org.springframework.context.event.EventListener;
 import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.stereotype.Service;
@@ -51,10 +53,13 @@ public class ChatService {
 
 	private final Map<String, ChatUser> connectedUsers = new HashMap<>();
 	private final Map<Long, String> wampSessionToUserId = new HashMap<>();
-	
+
+	private final PolicyFactory policy;
+
 	public ChatService(WampPublisher wampPublisher, TranslateService translateService) {
 		this.wampPublisher = wampPublisher;
 		this.translateService = translateService;
+		this.policy = Sanitizers.FORMATTING.and(Sanitizers.LINKS);
 	}
 
 	@EventListener
@@ -105,13 +110,14 @@ public class ChatService {
 		if (message.getType().equals("N")) {
 			for (String lang : this.subscribedLanguages) {
 				if (message.getLang().equals(lang)) {
-					this.wampPublisher.publishToAll("msg." + lang, message);
+					this.wampPublisher.publishToAll("msg." + lang, message
+							.copyWithContent(this.policy.sanitize(message.getContent())));
 				}
 				else {
 					String translatedMsg = this.translateService
 							.translate(message.getContent(), message.getLang(), lang);
 					this.wampPublisher.publishToAll("msg." + lang,
-							message.copyWithContent(translatedMsg));
+							message.copyWithContent(this.policy.sanitize(translatedMsg)));
 				}
 			}
 		}
@@ -124,7 +130,7 @@ public class ChatService {
 	public void iconChanged(String userId, String icon) {
 		ChatUser user = this.connectedUsers.get(userId);
 		if (user != null) {
-			user.setIcon(icon);			
+			user.setIcon(icon);
 		}
 	}
 
@@ -132,7 +138,7 @@ public class ChatService {
 	public void nameChanged(String userId, String name) {
 		ChatUser user = this.connectedUsers.get(userId);
 		if (user != null) {
-			user.setName(name);			
+			user.setName(name);
 		}
 	}
 
@@ -163,7 +169,7 @@ public class ChatService {
 					"tried to do an emote that doesn't exist. Everyone point and laugh at them!");
 		}
 	}
-	
+
 	private String getUserName(String id) {
 		ChatUser chatUser = this.connectedUsers.get(id);
 		if (chatUser != null) {
