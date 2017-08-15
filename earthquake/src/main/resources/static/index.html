@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Earthquake in the last hour..</title>
+<link rel="stylesheet"
+	href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+<style>
+body {
+	font-family: tahoma, verdana, arial, sans-serif;
+	font-size: 12px;
+}
+</style>
+
+<script src="https://static.rasc.ch/autobahn-17.5.2.js"></script>
+
+</head>
+<body>
+	<div class="container">
+		<div class="row">
+			<div class="col-sm-12">
+				<h1 class="well well-small">Quake Locations</h1>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-sm-12">
+				<table class="table table-bordered table-striped">
+					<thead>
+						<tr>
+							<th width="20%">Magnitude</th>
+							<th width="50%">Place</th>
+							<th width="30%">Time</th>
+						</tr>
+					</thead>
+					<tbody id="quakebody">
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+
+
+	<script>
+		function connect() {
+			const serverPathUrl = window.location.pathname.substring(0, window.location.pathname.lastIndexOf('/') + 1);
+			const wsURL = (window.location.protocol == "https:" ? "wss://" : "ws://") + window.location.host + serverPathUrl + "wamp";
+
+			const connection = new autobahn.Connection({
+				url: wsURL
+			});
+
+			connection.onopen = function(session, details) {
+				session.call('initialload').then(function(arg) {
+					showQuakeInfo(arg);					
+				});
+				session.subscribe("earthquakes", function(arg) {
+					showQuakeInfo(arg[0]);
+				});
+			};			
+			
+			connection.open();
+		}
+
+		function showQuakeInfo(quakeCollection) {
+			var quakeFeatures = quakeCollection.features
+			var response = document.getElementById('quakebody');
+
+			while (response.lastChild) {
+				response.removeChild(response.lastChild);
+			}
+
+			for (var i = 0; i < quakeFeatures.length; i++) {
+				var quakeFeature = quakeFeatures[i];
+				var place = quakeFeature.properties.place;
+				var magnitude = quakeFeature.properties.mag;
+				var time = new Date(parseInt(quakeFeature.properties.time));
+
+				var responseTr = document.createElement('tr');
+
+				var magTd = document.createElement('td');
+				magTd.appendChild(document.createTextNode(magnitude));
+				responseTr.appendChild(magTd);
+
+				var placeTd = document.createElement('td');
+				var placeA = document.createElement('a');
+				placeA.setAttribute('href', quakeFeature.properties.url);
+				placeA.setAttribute('target', '_blank');
+
+				placeA.appendChild(document.createTextNode(place));
+				placeTd.appendChild(placeA);
+
+				responseTr.appendChild(placeTd);
+
+				var timeTd = document.createElement('td');
+				timeTd.appendChild(document.createTextNode(time.toTimeString()));
+				responseTr.appendChild(timeTd);
+
+				response.appendChild(responseTr);
+			}
+		}
+
+		connect();
+	</script>
+
+</body>
+</html>
