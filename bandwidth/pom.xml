@@ -4,11 +4,11 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>ch.rasc</groupId>
-	<artifactId>wamp2spring-demo-bandwith</artifactId>
+	<artifactId>wamp2spring-demo-bandwidth</artifactId>
 	<version>1.0.0</version>
 	<packaging>jar</packaging>
 
-	<name>wamp2spring-demo-bandwith</name>
+	<name>wamp2spring-demo-bandwidth</name>
 	<description>Demo project for wamp2spring</description>
 
 	<parent>
