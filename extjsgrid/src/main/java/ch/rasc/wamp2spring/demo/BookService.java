@@ -2,12 +2,10 @@ package ch.rasc.wamp2spring.demo;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 
-import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
@@ -16,6 +14,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import ch.rasc.wamp2spring.WampPublisher;
 import ch.rasc.wamp2spring.annotation.WampProcedure;
+import ch.rasc.wamp2spring.annotation.WampSessionId;
 
 @SuppressWarnings("null")
 @Service
@@ -53,8 +52,7 @@ public class BookService {
 	}
 
 	@WampProcedure("grid.create")
-	public List<Book> bookCreate(List<Book> books,
-			@Header("WAMP_SESSION_ID") long wampSessionId) {
+	public List<Book> bookCreate(List<Book> books, @WampSessionId long wampSessionId) {
 		System.out.println("bookCreate:" + wampSessionId);
 
 		List<Book> result = new ArrayList<>();
@@ -63,14 +61,13 @@ public class BookService {
 			result.add(book);
 		}
 
-		this.wampPublisher.publishToAllExcept(Collections.singleton(wampSessionId),
-				"grid.oncreate", result);
+		this.wampPublisher.publishToAllExcept(wampSessionId, "grid.oncreate", result);
 		return result;
 	}
 
 	@WampProcedure("grid.update")
 	public List<Map<String, Object>> bookUpdate(List<Map<String, Object>> requestData,
-			@Header("WAMP_SESSION_ID") long wampSessionId) {
+			@WampSessionId long wampSessionId) {
 		System.out.println("bookUpdate:" + wampSessionId);
 
 		List<Map<String, Object>> result = new ArrayList<>();
@@ -79,19 +76,17 @@ public class BookService {
 			result.add(updatedFields);
 		}
 
-		this.wampPublisher.publishToAllExcept(Collections.singleton(wampSessionId),
-				"grid.onupdate", result);
+		this.wampPublisher.publishToAllExcept(wampSessionId, "grid.onupdate", result);
 		return result;
 	}
 
 	@WampProcedure("grid.destroy")
 	public void bookDestroy(List<Book> books,
-			@Header("WAMP_SESSION_ID") long wampSessionId) throws Throwable {
+			@WampSessionId long wampSessionId) throws Throwable {
 		System.out.println("bookDestroy:" + wampSessionId);
 		for (Book book : books) {
 			BookDb.delete(book);
 		}
-		this.wampPublisher.publishToAllExcept(Collections.singleton(wampSessionId),
-				"grid.ondestroy", books);
+		this.wampPublisher.publishToAllExcept(wampSessionId, "grid.ondestroy", books);
 	}
 }
