@@ -30,7 +30,7 @@ import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
 
 import ch.rasc.wamp2spring.WampPublisher;
-import ch.rasc.wamp2spring.annoion.WampProcedure;
+import ch.rasc.wamp2spring.annotation.WampProcedure;
 import ch.rasc.wamp2spring.annotation.WampSessionId;
 import ch.rasc.wamp2spring.event.WampDisconnectEvent;
 import ch.rasc.wamp2spring.event.WampSubscriptionSubscribedEvent;
