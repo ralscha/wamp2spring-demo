@@ -17,8 +17,8 @@ import org.springframework.util.StreamUtils;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import ch.rasc.wampspring.WampPublisher;
-import ch.rasc.wampspring.pubsub.SubscriptionRegistry;
+import ch.rasc.wamp2spring.WampPublisher;
+import ch.rasc.wamp2spring.pubsub.SubscriptionRegistry;
 
 @Service
 public class CarDriver {

@@ -3,15 +3,15 @@ package ch.rasc.wamp2spring.demo;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
 
-import ch.rasc.wampspring.WampPublisher;
-import ch.rasc.wampspring.annotation.WampListener;
-import ch.rasc.wampspring.annotation.WampProcedure;
-import ch.rasc.wampspring.event.WampDisconnectEvent;
-import ch.rasc.wampspring.event.WampSessionEstablishedEvent;
-import ch.rasc.wampspring.event.WampSubscriptionCreatedEvent;
-import ch.rasc.wampspring.event.WampSubscriptionDeletedEvent;
-import ch.rasc.wampspring.event.WampSubscriptionSubscribedEvent;
-import ch.rasc.wampspring.event.WampSubscriptionUnsubscribedEvent;
+import ch.rasc.wamp2spring.WampPublisher;
+import ch.rasc.wamp2spring.annotation.WampListener;
+import ch.rasc.wamp2spring.annotation.WampProcedure;
+import ch.rasc.wamp2spring.event.WampDisconnectEvent;
+import ch.rasc.wamp2spring.event.WampSessionEstablishedEvent;
+import ch.rasc.wamp2spring.event.WampSubscriptionCreatedEvent;
+import ch.rasc.wamp2spring.event.WampSubscriptionDeletedEvent;
+import ch.rasc.wamp2spring.event.WampSubscriptionSubscribedEvent;
+import ch.rasc.wamp2spring.event.WampSubscriptionUnsubscribedEvent;
 
 @Service
 public class TestService {

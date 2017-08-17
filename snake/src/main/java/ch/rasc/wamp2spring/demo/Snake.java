@@ -24,7 +24,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import ch.rasc.wampspring.WampPublisher;
+import ch.rasc.wamp2spring.WampPublisher;
 
 public class Snake {
 

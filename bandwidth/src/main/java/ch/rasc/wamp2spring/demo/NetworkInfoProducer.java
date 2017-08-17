@@ -15,8 +15,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StreamUtils;
 import org.springframework.util.StringUtils;
 
-import ch.rasc.wampspring.WampPublisher;
-import ch.rasc.wampspring.pubsub.SubscriptionRegistry;
+import ch.rasc.wamp2spring.WampPublisher;
+import ch.rasc.wamp2spring.pubsub.SubscriptionRegistry;
 
 @Service
 public class NetworkInfoProducer {

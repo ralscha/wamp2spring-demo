@@ -4,9 +4,9 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.web.socket.server.HandshakeHandler;
 
-import ch.rasc.wampspring.config.EnableWamp;
-import ch.rasc.wampspring.config.PreferJsonHandshakeHandler;
-import ch.rasc.wampspring.config.WampConfiguration;
+import ch.rasc.wamp2spring.config.EnableWamp;
+import ch.rasc.wamp2spring.config.PreferJsonHandshakeHandler;
+import ch.rasc.wamp2spring.config.WampConfiguration;
 
 @SpringBootApplication
 @EnableWamp

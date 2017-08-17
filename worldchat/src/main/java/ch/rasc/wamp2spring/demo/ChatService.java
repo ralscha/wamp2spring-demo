@@ -14,12 +14,12 @@ import org.springframework.context.event.EventListener;
 import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.stereotype.Service;
 
-import ch.rasc.wampspring.WampPublisher;
-import ch.rasc.wampspring.annotation.WampListener;
-import ch.rasc.wampspring.annotation.WampProcedure;
-import ch.rasc.wampspring.event.WampDisconnectEvent;
-import ch.rasc.wampspring.event.WampSubscriptionCreatedEvent;
-import ch.rasc.wampspring.event.WampSubscriptionDeletedEvent;
+import ch.rasc.wamp2spring.WampPublisher;
+import ch.rasc.wamp2spring.annotation.WampListener;
+import ch.rasc.wamp2spring.annotation.WampProcedure;
+import ch.rasc.wamp2spring.event.WampDisconnectEvent;
+import ch.rasc.wamp2spring.event.WampSubscriptionCreatedEvent;
+import ch.rasc.wamp2spring.event.WampSubscriptionDeletedEvent;
 
 @Service
 public class ChatService {

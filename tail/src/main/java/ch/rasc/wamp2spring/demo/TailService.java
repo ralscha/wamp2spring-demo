@@ -26,7 +26,7 @@ import com.maxmind.geoip2.exception.AddressNotFoundException;
 import com.maxmind.geoip2.exception.GeoIp2Exception;
 import com.maxmind.geoip2.model.CityResponse;
 
-import ch.rasc.wampspring.WampPublisher;
+import ch.rasc.wamp2spring.WampPublisher;
 import eu.bitwalker.useragentutils.UserAgent;
 
 @Service

@@ -30,10 +30,10 @@ import org.springframework.context.event.EventListener;
 import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.stereotype.Service;
 
-import ch.rasc.wampspring.WampPublisher;
-import ch.rasc.wampspring.annotation.WampProcedure;
-import ch.rasc.wampspring.event.WampDisconnectEvent;
-import ch.rasc.wampspring.event.WampSubscriptionSubscribedEvent;
+import ch.rasc.wamp2spring.WampPublisher;
+import ch.rasc.wamp2spring.annotation.WampProcedure;
+import ch.rasc.wamp2spring.event.WampDisconnectEvent;
+import ch.rasc.wamp2spring.event.WampSubscriptionSubscribedEvent;
 
 /**
  * Sets up the timer for the multi-player snake game WebSocket example.
