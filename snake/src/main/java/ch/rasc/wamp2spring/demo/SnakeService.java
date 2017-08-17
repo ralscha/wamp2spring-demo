@@ -27,11 +27,11 @@ import java.util.TimerTask;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.springframework.context.event.EventListener;
-import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.stereotype.Service;
 
 import ch.rasc.wamp2spring.WampPublisher;
-import ch.rasc.wamp2spring.annotation.WampProcedure;
+import ch.rasc.wamp2spring.annoion.WampProcedure;
+import ch.rasc.wamp2spring.annotation.WampSessionId;
 import ch.rasc.wamp2spring.event.WampDisconnectEvent;
 import ch.rasc.wamp2spring.event.WampSubscriptionSubscribedEvent;
 
@@ -119,14 +119,19 @@ public class SnakeService {
 			Map<String, Object> es = new HashMap<>();
 			es.put("id", snake.getId());
 			es.put("color", snake.getHexColor());
+
+			List<Location> locations = new ArrayList<>();
+			locations.add(snake.getHead());
+			locations.addAll(snake.getTail());
+			es.put("body", locations);
+
 			result.add(es);
 		}
 		return result;
 	}
 
 	@WampProcedure
-	public void changeDirection(String message,
-			@Header("WAMP_SESSION_ID") long wampSessionId) {
+	public void changeDirection(String message, @WampSessionId long wampSessionId) {
 		Snake snake = this.snakes.get(wampSessionId);
 		if (snake != null) {
 			if ("west".equals(message)) {

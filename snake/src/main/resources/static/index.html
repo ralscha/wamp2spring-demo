@@ -137,9 +137,10 @@
             }
         };
 
-        Game.addSnake = function(id, color) {
+        Game.addSnake = function(id, color, body) {
             Game.entities[id] = new Snake();
             Game.entities[id].color = color;
+            Game.entities[id].snakeBody = body;
         };
 
         Game.updateSnake = function(id, snakeBody) {
@@ -195,7 +196,7 @@
                         break;
                     case 'join':
                         for (var j = 0; j < packet.data.length; j++) {
-                            Game.addSnake(packet.data[j].id, packet.data[j].color);
+                            Game.addSnake(packet.data[j].id, packet.data[j].color, packet.data[j].body);
                         }
                         break;
                     case 'leave':
