@@ -11,12 +11,12 @@ import javax.annotation.Nonnull;
 import org.owasp.html.PolicyFactory;
 import org.owasp.html.Sanitizers;
 import org.springframework.context.event.EventListener;
-import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.stereotype.Service;
 
 import ch.rasc.wamp2spring.WampPublisher;
 import ch.rasc.wamp2spring.annotation.WampListener;
 import ch.rasc.wamp2spring.annotation.WampProcedure;
+import ch.rasc.wamp2spring.annotation.WampSessionId;
 import ch.rasc.wamp2spring.event.WampDisconnectEvent;
 import ch.rasc.wamp2spring.event.WampSubscriptionCreatedEvent;
 import ch.rasc.wamp2spring.event.WampSubscriptionDeletedEvent;
@@ -91,7 +91,7 @@ public class ChatService {
 	}
 
 	@WampProcedure("connect")
-	public void connect(ChatUser user, @Header("WAMP_SESSION_ID") long wampSessionId) {
+	public void connect(ChatUser user, @WampSessionId long wampSessionId) {
 		this.wampSessionToUserId.put(wampSessionId, user.getId());
 		this.connectedUsers.put(user.getId(), user);
 
