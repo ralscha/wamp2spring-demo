@@ -67,10 +67,19 @@
 	</dependencies>
 
 	<build>
+		<finalName>tail</finalName>
+		
 		<plugins>
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
+				<dependencies>
+					<dependency>
+						<groupId>org.springframework.boot.experimental</groupId>
+						<artifactId>spring-boot-thin-layout</artifactId>
+						<version>1.0.6.RELEASE</version>
+					</dependency>
+				</dependencies>
 			</plugin>
 		</plugins>
 	</build>

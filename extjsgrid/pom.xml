@@ -42,7 +42,10 @@
 	</dependencies>
 
 	<build>
+		<finalName>extjsgrid</finalName>
+		
 		<plugins>
+
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
@@ -54,6 +57,85 @@
 					</dependency>
 				</dependencies>
 			</plugin>
+			
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>exec-maven-plugin</artifactId>
+				<version>1.4.0</version>
+				<executions>
+					<execution>
+						<id>sencha-app-clean-development</id>
+						<goals>
+							<goal>exec</goal>
+						</goals>
+						<phase>clean</phase>
+						<configuration>
+							<executable>sencha</executable>
+							<workingDirectory>${basedir}/client</workingDirectory>
+							<arguments>
+								<argument>app</argument>
+								<argument>clean</argument>
+								<argument>development</argument>
+							</arguments>
+						</configuration>
+					</execution>
+					<execution>
+						<id>sencha-app-clean</id>
+						<goals>
+							<goal>exec</goal>
+						</goals>
+						<phase>clean</phase>
+						<configuration>
+							<executable>sencha</executable>
+							<workingDirectory>${basedir}/client</workingDirectory>
+							<arguments>
+								<argument>app</argument>
+								<argument>clean</argument>
+							</arguments>
+						</configuration>
+					</execution>
+					<execution>
+						<id>sencha-app-build</id>
+						<goals>
+							<goal>exec</goal>
+						</goals>
+						<phase>prepare-package</phase>
+						<configuration>
+							<executable>sencha</executable>
+							<workingDirectory>${basedir}/client</workingDirectory>
+							<arguments>
+								<argument>app</argument>
+								<argument>build</argument>
+							</arguments>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+
+			<plugin>
+				<artifactId>maven-antrun-plugin</artifactId>
+				<executions>
+					<execution>
+						<phase>prepare-package</phase>
+						<configuration>
+							<target>
+
+								<copy todir="${basedir}/target/classes/static"
+									includeEmptyDirs="false">
+									<fileset dir="${basedir}/client/build/production/Demo">
+										<exclude name="**/Readme.md" />
+									</fileset>
+								</copy>
+
+							</target>
+						</configuration>
+						<goals>
+							<goal>run</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>			
+			
 		</plugins>
 	</build>
 
