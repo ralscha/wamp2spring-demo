@@ -1,38 +1,52 @@
+#!/bin/sh
+
+export JAVA_HOME=/opt/java
+chmod 700 ./mvnw
+
 cd bandwidth
-./mvnw clean package
+../mvnw clean package
+cp target/bandwidth.jar ../..
 
-cd datachannel
-./mvnw clean package
+cd ../datachannel
+../mvnw clean package
+cp target/datachannel.jar ../..
 
-cd earthquake
-./mvnw clean package
+cd ../earthquake
+../mvnw clean package
+cp target/earthquake.jar ../..
 
-cd extjsgrid
-./mvnw clean package
+cd ../gauge
+../mvnw clean package
+cp target/gauge.jar ../..
 
-cd fiddle
-./mvnw clean package
+cd ../iss
+../mvnw clean package
+cp target/iss.jar ../..
 
-cd gauge
-./mvnw clean package
+cd ../maps
+../mvnw clean package
+cp target/maps.jar ../..
 
-cd iss
-./mvnw clean package
+cd ../pirate
+../mvnw clean package
+cp target/pirate.jar ../..
 
-cd maps
-./mvnw clean package
+cd ../simple-chat
+../mvnw clean package
+cp target/simple-chat.jar ../..
 
-cd simple-chat
-./mvnw clean package
+cd ../smoothie
+../mvnw clean package
+cp target/smoothie.jar ../..
 
-cd smoothie
-./mvnw clean package
+cd ../snake
+../mvnw clean package
+cp target/snake.jar ../..
 
-cd snake
-./mvnw clean package
+cd ../tail
+../mvnw clean package
+cp target/tail.jar ../..
 
-cd tail
-./mvnw clean package
-
-cd worldchat
-./mvnw clean package
+cd ../worldchat
+../mvnw clean package
+cp target/worldchat.jar ../..

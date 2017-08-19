@@ -1,40 +1,43 @@
 cd bandwidth
 call ..\mvnw.cmd clean package
 
-cd datachannel
+cd ..\datachannel
 call ..\mvnw.cmd clean package
 
-cd earthquake
+cd ..\earthquake
 call ..\mvnw.cmd clean package
 
-cd extjsgrid
+cd ..\extjsgrid
 call ..\mvnw.cmd clean package
 
-cd fiddle
+cd ..\fiddle
 call ..\mvnw.cmd clean package
 
-cd gauge
+cd ..\gauge
 call ..\mvnw.cmd clean package
 
-cd iss
+cd ..\iss
 call ..\mvnw.cmd clean package
 
-cd maps
+cd ..\maps
 call ..\mvnw.cmd clean package
 
-cd simple-chat
+cd ..\pirate
 call ..\mvnw.cmd clean package
 
-cd smoothie
+cd ..\simple-chat
 call ..\mvnw.cmd clean package
 
-cd snake
+cd ..\smoothie
 call ..\mvnw.cmd clean package
 
-cd tail
+cd ..\snake
 call ..\mvnw.cmd clean package
 
-cd worldchat
+cd ..\tail
+call ..\mvnw.cmd clean package
+
+cd ..\worldchat
 call ..\mvnw.cmd clean package
 
 cd ..
