@@ -1,0 +1,42 @@
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport"
+	content="width=device-width, user-scalable=yes, initial-scale=1, maximum-scale=1">
+<meta id="theme-color" name="theme-color" content="#ffeebb">
+<title>WebRTC DataChannel Example</title>
+<link rel="stylesheet" href="app.css">
+<link rel="stylesheet" href="https://static.rasc.ch/vis.min-4.20.1.css">
+    <style>
+        #peers {
+            width: 900px;
+            height: 400px;
+            border: 1px solid lightgray;
+        }       
+    </style>
+</head>
+
+<body>
+	<h2>WebRTC DataChannel Example</h2>
+
+	<h4>
+		My ID: <span id="wampSessionIdOutput"></span>
+	</h4>
+
+    <h4>Network</h4>
+	<div id="peers"></div>
+
+	<h4>Peer-to-Peer Messages</h4>
+		<input type="text" id="messageTa" size="50">
+		<button id="sendButton">Send</button>
+	
+	<div id="output">
+	
+	</div>
+
+	<script src="https://static.rasc.ch/autobahn-17.5.2.js"></script>
+	<script src="https://static.rasc.ch/adapter-latest-4.2.2.js"></script>
+    <script src="https://static.rasc.ch/vis.min-4.20.1.js"></script>
+	<script src="main.js"></script>
+</body>
+</html>
