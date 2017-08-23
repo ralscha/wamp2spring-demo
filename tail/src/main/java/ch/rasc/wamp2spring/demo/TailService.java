@@ -173,7 +173,6 @@ public class TailService {
 	}
 
 	private static String getAccessLogRegex() {
-		// 2a01:2a8:8100:e701:955b:f12a:b16f:2510
 		String regex1 = "^([\\d.:a-z]+)"; // Client IP
 		String regex2 = " (\\S+)"; // -
 		String regex3 = " (\\S+)"; // -
