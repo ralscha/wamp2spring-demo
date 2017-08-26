@@ -43,8 +43,8 @@
 		var connection = new autobahn.Connection({
 			url: wsURL,
 			type: 'websocket',
-			serializers: [ new CBORSerializer() ],
-			protocols: [ 'wamp.2.cbor' ],
+			//serializers: [ new CBORSerializer() ],
+			//protocols: [ 'wamp.2.cbor' ],
 			realm: 'test'
 		});
 
