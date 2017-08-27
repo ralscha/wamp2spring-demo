@@ -16,15 +16,15 @@ public class DemoApplication extends WampConfiguration {
 	public static void main(String[] args) {		
 		SpringApplication.run(DemoApplication.class, args);
 	}
-
-	@Override
-	protected void configureFeatures(Features features) {
-		features.disable(Feature.DEALER);
-	}
-
-	@Override
-	protected HandshakeHandler getHandshakeHandler() {
-		 return new PreferJsonHandshakeHandler();
-		//return new PreferCborHandshakeHandler();
-	}
+//
+//	@Override
+//	protected void configureFeatures(Features features) {
+//		features.disable(Feature.DEALER);
+//	}
+//
+//	@Override
+//	protected HandshakeHandler getHandshakeHandler() {
+//		 return new PreferJsonHandshakeHandler();
+//		//return new PreferCborHandshakeHandler();
+//	}
 }

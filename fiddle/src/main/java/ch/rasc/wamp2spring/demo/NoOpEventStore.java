@@ -6,7 +6,7 @@ import java.util.List;
 import org.springframework.stereotype.Component;
 
 import ch.rasc.wamp2spring.config.EventStore;
-import ch.rasc.wamp2spring.config.TopicMatch;
+import ch.rasc.wamp2spring.config.DestinationMatch;
 import ch.rasc.wamp2spring.message.PublishMessage;
 
 @Component
@@ -18,7 +18,7 @@ public class NoOpEventStore implements EventStore {
 	}
 
 	@Override
-	public List<PublishMessage> getRetained(TopicMatch query) {
+	public List<PublishMessage> getRetained(DestinationMatch query) {
 		return Collections.emptyList();
 	}
 
