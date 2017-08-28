@@ -8,7 +8,6 @@ import {ServerPush} from './server-push';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/concat';
 import 'rxjs/add/operator/catch';
-import {Observable} from "rxjs/Observable";
 import {EmptyObservable} from "rxjs/observable/EmptyObservable";
 
 @Injectable()
@@ -79,7 +78,6 @@ export class LocationTracker {
         return new EmptyObservable();
       })
       .subscribe((location: BackgroundGeolocationResponse) => {
-      console.log(location);
         if (location) {
           this.serverPush.pushPosition({
             accuracy: location.accuracy,
