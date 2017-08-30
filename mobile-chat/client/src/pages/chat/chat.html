@@ -1,0 +1,17 @@
+<ion-header>
+  <ion-navbar>
+    <ion-title>{{room?.name}}</ion-title>
+    <ion-buttons end>
+      <button ion-button (click)="compose()">
+        Compose
+      </button>
+    </ion-buttons>
+  </ion-navbar>
+</ion-header>
+
+<ion-content padding>
+  <div *ngFor="let message of messages">
+    <p class="triangle-border right" *ngIf="message.sender === user"><span>{{message.sender}}:</span><br>{{message.msg}}</p>
+    <p class="triangle-border left" *ngIf="message.sender !== user"><span>{{message.sender}}:</span><br>{{message.msg}}</p>
+  </div>
+</ion-content>

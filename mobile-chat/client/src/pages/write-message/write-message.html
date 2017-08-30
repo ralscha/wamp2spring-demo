@@ -1,0 +1,21 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>
+      Write Message
+    </ion-title>
+    <ion-buttons end>
+      <button ion-button (click)="dismiss()">Cancel</button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content padding>
+    <form>
+      <ion-item>
+        <ion-label stacked>New Message</ion-label>
+        <ion-textarea [(ngModel)]="message" [ngModelOptions]="{standalone: true}"></ion-textarea>
+      </ion-item>
+    </form>
+    <button ion-button full (click)="sendMessage()">Send</button>
+</ion-content>
+

@@ -1,0 +1,46 @@
+<ion-header>
+  <ion-navbar>
+    <ion-title>
+      Chatrooms
+    </ion-title>
+    <ion-buttons end>
+      <button ion-button icon-only (click)="addRoom()" [hidden]="addRoomMode">
+        <ion-icon name="add"></ion-icon>
+      </button>
+      <button ion-button icon-only (click)="logout()">
+        <ion-icon name="exit"></ion-icon>
+      </button>
+    </ion-buttons>
+  </ion-navbar>
+</ion-header>
+
+<ion-content padding>
+  <ion-list>
+    <ion-item-sliding *ngFor="let room of rooms" #slidingItem>
+      <button detail-none ion-item (click)="onRoomSelected(room)" no-padding>{{room.name}}</button>
+      <ion-item-options side="right">
+        <button ion-button (click)="removeRoom(room, slidingItem)" color="danger">Delete</button>
+      </ion-item-options>
+    </ion-item-sliding>
+  </ion-list>
+
+  <form [hidden]="!addRoomMode">
+    <ion-list>
+      <ion-item>
+        <ion-label stacked>New Room</ion-label>
+        <ion-input [(ngModel)]="newRoomName" [ngModelOptions]="{standalone: true}"></ion-input>
+      </ion-item>
+    </ion-list>
+    <ion-grid>
+      <ion-row>
+        <ion-col col-6>
+          <button ion-button full (click)="cancelAddRoom()">Cancel</button>
+        </ion-col>
+        <ion-col col-6>
+          <button ion-button full color="secondary" (click)="newRoom()">Add</button>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </form>
+
+</ion-content>
