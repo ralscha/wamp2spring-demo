@@ -207,7 +207,7 @@
             "path": "${framework.dir}/build/ext-modern-all-debug.js"
         },
         {
-        	"path": "https://static.rasc.ch/autobahn-17.5.2.js",
+        	"path": "https://demo.rasc.ch/autobahn-17.5.2.js",
 			"remote": true
         },
         {
