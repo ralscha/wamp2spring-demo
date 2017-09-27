@@ -157,7 +157,7 @@ function handleChangeIcon(userId, icon) {
 	var uiIconList = document.body.querySelectorAll('.user-icon.'+userId);
 
 	for (var i = 0; i < uiIconList.length; i++) {
-		uiIconList[i].src = "../assets/" + icon;		
+		uiIconList[i].src = "assets/" + icon;		
 	}
 	
 	wsSession.call('list.users').then(function(users) {
@@ -236,7 +236,7 @@ function updateChatUI(msg) {
 	var userIcon = document.createElement('img');
 	userIcon.setAttribute('alt', 'User Icon');
 	userIcon.className = "user-icon " + msgUser.id;
-	userIcon.src = "../assets/" + msgUser.icon;
+	userIcon.src = "assets/" + msgUser.icon;
 	chatBox.appendChild(userIcon);
 
 	chatArea.appendChild(chatBoxContainer);
