@@ -14,7 +14,7 @@
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>2.0.0.BUILD-SNAPSHOT</version>
+		<version>2.0.0.M5</version>
 		<relativePath />
 	</parent>
 
@@ -39,7 +39,7 @@
 		<dependency>
 			<groupId>com.google.cloud</groupId>
 			<artifactId>google-cloud-translate</artifactId>
-			<version>1.6.0</version>
+			<version>1.8.0</version>
 			<exclusions>
 				<exclusion>
 					<groupId>joda-time</groupId>
@@ -61,13 +61,13 @@
 		<dependency>
 			<groupId>com.googlecode.owasp-java-html-sanitizer</groupId>
 			<artifactId>owasp-java-html-sanitizer</artifactId>
-			<version>20170515.1</version>
+			<version>20171016.1</version>
 		</dependency>
 		
 		<dependency>
 		    <groupId>com.google.guava</groupId>
 		    <artifactId>guava</artifactId>
-		    <version>23.1-jre</version>
+		    <version>23.2-jre</version>
 		</dependency>
 		
 		<dependency>
