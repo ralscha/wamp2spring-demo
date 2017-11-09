@@ -1,17 +1,20 @@
-var map, marker, locationMarkers = [], stationaryCircles = [],
-  currentLocationMarker, locationAccuracyCircle, path, previousPosition;
-
+let map;
+let locationMarkers = [];
+let stationaryCircles = [];
+let currentLocationMarker;
+let locationAccuracyCircle;
+let path;
+let previousPosition;
 
 function init() { 
   loadMap();
   startWampSession();
 }
 
-
 function loadMap() {
-  var latLng = new google.maps.LatLng(39, 34);
+  const latLng = new google.maps.LatLng(39, 34);
 
-  var mapOptions = {
+  const mapOptions = {
     center: latLng,
     zoom: 3,
     mapTypeId: google.maps.MapTypeId.ROADMAP
@@ -59,35 +62,10 @@ function handlePositions(positions) {
 }
 
 function handleStationaries(stationaries) {
-  for (let stationary of stationaries) {
+  for (const stationary of stationaries) {
     handleStationary(stationary);
   }
 }
-
-
-function clear() {
-  locationMarkers.forEach(r => r.setMap(null));
-  locationMarkers = [];
-
-  stationaryCircles.forEach(r => r.setMap(null));
-  stationaryCircles = [];
-
-  if (currentLocationMarker) {
-    currentLocationMarker.setMap(null);
-    currentLocationMarker = null;
-  }
-
-  if (locationAccuracyCircle) {
-    locationAccuracyCircle.setMap(null);
-    locationAccuracyCircle = null;
-  }
-
-  if (path) {
-    path.setMap(null);
-    path = null;
-  }
-}
-
 
 function handlePosition(position) {
   const latlng = new google.maps.LatLng(position.latitude, position.longitude);
@@ -178,5 +156,29 @@ function handleStationary(stationary) {
 	    const removedCircle = stationaryCircles.shift();
 	    removedCircle.setMap(null);
 	  }
+  }
+}
+
+function clear() {
+  locationMarkers.forEach(r => r.setMap(null));
+  locationMarkers = [];
+  previousPosition = null;
+
+  stationaryCircles.forEach(r => r.setMap(null));
+  stationaryCircles = [];
+
+  if (currentLocationMarker) {
+    currentLocationMarker.setMap(null);
+    currentLocationMarker = null;
+  }
+
+  if (locationAccuracyCircle) {
+    locationAccuracyCircle.setMap(null);
+    locationAccuracyCircle = null;
+  }
+
+  if (path) {
+    path.setMap(null);
+    path = null;
   }
 }

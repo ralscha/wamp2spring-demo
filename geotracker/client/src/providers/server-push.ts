@@ -1,41 +1,36 @@
 import {Injectable} from '@angular/core';
-import {Http, Headers, RequestOptions} from '@angular/http';
+import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {Position} from '../position';
 import {Stationary} from '../stationary';
 
 @Injectable()
 export class ServerPush {
-  //private serverURL: string = 'https://geo.rasc.ch';
-  private serverURL: string = 'https://5ea8af78.ngrok.io';
-  private jsonOptions: RequestOptions;
-  private textOptions: RequestOptions;
+  private serverURL: string = 'https://382076a0.ngrok.io';
 
-  constructor(private http: Http) {
-    this.jsonOptions = new RequestOptions({headers: new Headers({'Content-Type': 'application/json'})});
-    this.textOptions = new RequestOptions({headers: new Headers({'Content-Type': 'text/plain'})});
+  constructor(private readonly httpClient: HttpClient) {
   }
 
   pushStationary(stat: Stationary): void {
-    this.http.post(this.serverURL + '/stationary', JSON.stringify(stat), this.jsonOptions)
+    this.httpClient.post(`${this.serverURL}/stationary`, stat)
       .subscribe(() => {
       }, error => console.log(error));
   }
 
   pushPosition(pos: Position): void {
-    this.http.post(this.serverURL + '/pos', JSON.stringify(pos), this.jsonOptions)
+    this.httpClient.post(`${this.serverURL}/pos`, pos)
       .subscribe(() => {
-      }, error => console.log(error));
+      }, error => this.pushError(error));
   }
 
   pushError(error: string): void {
-    this.http.post(this.serverURL + '/clienterror', error, this.textOptions)
+    this.httpClient.post(`${this.serverURL}/clienterror`, error, {headers: new HttpHeaders({'Content-Type': 'text/plain'})})
       .subscribe(() => {
       }, error => console.log(error));
   }
 
   clear(): void {
-    this.http.delete(this.serverURL + '/clear').subscribe(() => {
-    }, error => console.log(error));
+    this.httpClient.delete(`${this.serverURL}/clear`).subscribe(() => {
+    }, error => this.pushError(error));
   }
 
 }
