@@ -4,8 +4,8 @@ import {WriteMessagePage} from '../write-message/write-message';
 import {Room} from "../../room";
 import {Message} from "../../message";
 import {WampProvider} from "../../providers/wamp/wamp";
-import {JwtHelper} from "angular2-jwt";
 import {AuthProvider} from "../../providers/auth/auth";
+import {JwtHelperService} from "@auth0/angular-jwt";
 
 @Component({
   selector: 'page-chat',
@@ -21,7 +21,7 @@ export class ChatPage {
               private readonly wampProvider: WampProvider,
               private readonly modalCtrl: ModalController,
               private readonly authProvider: AuthProvider,
-              jwtHelper: JwtHelper) {
+              jwtHelper: JwtHelperService) {
     this.authProvider.authUser.subscribe(jwt => {
       if (jwt) {
         const decoded = jwtHelper.decodeToken(jwt);

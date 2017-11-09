@@ -1,21 +1,15 @@
-import {Inject, Injectable} from "@angular/core";
-import {Storage} from "@ionic/storage";
-import {EnvVariables} from "../../env/environment-variables.token";
+import {ENV} from '@app/env';
 import {Room} from "../../room";
 
 declare var autobahn: any;
 
-@Injectable()
 export class WampProvider {
 
   private wampSession: any;
 
-  constructor(private readonly storage: Storage, @Inject(EnvVariables) private readonly envVariables) {
-  }
-
   connect(jwt): Promise<void> {
     return new Promise<void>((resolve, reject) => {
-      const connection = new autobahn.Connection({url: `${this.envVariables.WS_SCHEME}${this.envVariables.SERVER_ADDRESS}/wamp?access_token=${jwt}`});
+      const connection = new autobahn.Connection({url: `${ENV.WS_SCHEME}${ENV.SERVER_ADDRESS}/wamp?access_token=${jwt}`});
       connection.onopen = (session, details) => {
         this.wampSession = session;
         resolve();

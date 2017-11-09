@@ -3,6 +3,7 @@ package ch.rasc.wamp2spring.demo.security;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.AuthenticationException;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import ch.rasc.wamp2spring.demo.Application;
@@ -28,21 +30,13 @@ public class AuthController {
 
 	private final PasswordEncoder passwordEncoder;
 
-//	private final UserDetailsService userDetailsService;
-//
-//	private final UserDetailsChecker userDetailsChecker = new AccountStatusUserDetailsChecker();
-
 	private final AuthenticationManager authenticationManager;
-	
+
 	public AuthController(PasswordEncoder passwordEncoder, UserService userService,
-			TokenProvider tokenProvider, 
-			//UserDetailsService userDetailsService,
-			AuthenticationManager authenticationManager
-			) {
+			TokenProvider tokenProvider, AuthenticationManager authenticationManager) {
 		this.userService = userService;
 		this.tokenProvider = tokenProvider;
 		this.passwordEncoder = passwordEncoder;
-		//this.userDetailsService = userDetailsService;
 		this.authenticationManager = authenticationManager;
 
 		User user = new User();
@@ -52,6 +46,7 @@ public class AuthController {
 	}
 
 	@GetMapping("/authenticate")
+	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void authenticate() {
 		// we don't have to do anything here
 		// this is just a secure endpoint and the JWTFilter
@@ -75,34 +70,7 @@ public class AuthController {
 			response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
 			return null;
 		}
-	}	
-	
-//	@PostMapping("/login")
-//	public String authorize(@Valid @RequestBody User loginUser,
-//			HttpServletResponse response) {
-//		// UsernamePasswordAuthenticationToken authenticationToken = new
-//		// UsernamePasswordAuthenticationToken(
-//		// loginUser.getUsername(), loginUser.getPassword());
-//
-//		try {
-//			UserDetails userDetails = this.userDetailsService
-//					.loadUserByUsername(loginUser.getUsername());
-//
-//			this.userDetailsChecker.check(userDetails);
-//
-//			if (!this.passwordEncoder.matches(loginUser.getPassword(),
-//					userDetails.getPassword())) {
-//				throw new BadCredentialsException("Bad credentials");
-//			}
-//
-//			return this.tokenProvider.createToken(loginUser.getUsername());
-//		}
-//		catch (AuthenticationException e) {
-//			Application.logger.info("Security exception {}", e.getMessage());
-//			response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-//			return null;
-//		}
-//	}
+	}
 
 	@PostMapping("/signup")
 	public String signup(@RequestBody User signupUser) {
