@@ -45,7 +45,7 @@
   },
   "devDependencies": {
     "@angular/tsc-wrapped": "4.4.6",
-    "@ionic/app-scripts": "3.1.4",
+    "@ionic/app-scripts": "3.1.5",
     "typescript": "2.6.2"
   },
   "description": "geotracker app",
