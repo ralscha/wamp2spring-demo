@@ -53,21 +53,17 @@
 
 	<build>
 		<finalName>extjsgrid</finalName>
-		
+
 		<plugins>
 
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
-				<dependencies>
-					<dependency>
-						<groupId>org.springframework.boot.experimental</groupId>
-						<artifactId>spring-boot-thin-layout</artifactId>
-						<version>1.0.7.RELEASE</version>
-					</dependency>
-				</dependencies>
+				<configuration>
+					<executable>true</executable>
+				</configuration>
 			</plugin>
-			
+
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>exec-maven-plugin</artifactId>
@@ -144,8 +140,8 @@
 						</goals>
 					</execution>
 				</executions>
-			</plugin>			
-			
+			</plugin>
+
 		</plugins>
 	</build>
 

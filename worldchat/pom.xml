@@ -49,7 +49,7 @@
 		<dependency>
 			<groupId>com.google.cloud</groupId>
 			<artifactId>google-cloud-translate</artifactId>
-			<version>1.12.0</version>
+			<version>1.14.0</version>
 			<exclusions>
 				<exclusion>
 					<groupId>joda-time</groupId>
@@ -73,29 +73,25 @@
 			<artifactId>owasp-java-html-sanitizer</artifactId>
 			<version>20171016.1</version>
 		</dependency>
-		
+
 		<dependency>
-		    <groupId>com.google.guava</groupId>
-		    <artifactId>guava</artifactId>
-		    <version>23.5-jre</version>
+			<groupId>com.google.guava</groupId>
+			<artifactId>guava</artifactId>
+			<version>23.6-jre</version>
 		</dependency>
 
 	</dependencies>
-	
+
 	<build>
 		<finalName>worldchat</finalName>
-		
+
 		<plugins>
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
-				<dependencies>
-					<dependency>
-						<groupId>org.springframework.boot.experimental</groupId>
-						<artifactId>spring-boot-thin-layout</artifactId>
-						<version>1.0.7.RELEASE</version>
-					</dependency>
-				</dependencies>
+				<configuration>
+					<executable>true</executable>
+				</configuration>
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -106,15 +102,15 @@
 					<source>${java.version}</source>
 					<target>${java.version}</target>
 					<parameters>true</parameters>
-					<annotationProcessorPaths>					
+					<annotationProcessorPaths>
 						<path>
 							<groupId>org.springframework.boot</groupId>
 							<artifactId>spring-boot-configuration-processor</artifactId>
 							<version>2.0.0.M7</version>
-						</path>					
+						</path>
 					</annotationProcessorPaths>
 				</configuration>
-			</plugin>			
+			</plugin>
 		</plugins>
 	</build>
 

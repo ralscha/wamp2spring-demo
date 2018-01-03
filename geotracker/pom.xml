@@ -45,7 +45,7 @@
 			<artifactId>wamp2spring</artifactId>
 			<version>1.0.0</version>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>org.immutables</groupId>
 			<artifactId>value</artifactId>
@@ -58,25 +58,19 @@
 			<artifactId>jsr305</artifactId>
 			<version>3.0.2</version>
 			<scope>provided</scope>
-		</dependency>		
-			
+		</dependency>
+
 	</dependencies>
 
 	<build>
 		<finalName>geotracker</finalName>
-		
+
 		<plugins>
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
-				<dependencies>
-					<dependency>
-						<groupId>org.springframework.boot.experimental</groupId>
-						<artifactId>spring-boot-thin-layout</artifactId>
-						<version>1.0.7.RELEASE</version>
-					</dependency>
-				</dependencies>
 				<configuration>
+					<executable>true</executable>
 					<excludes>
 						<exclude>
 							<groupId>org.immutables</groupId>
@@ -87,7 +81,7 @@
 							<artifactId>jsr305</artifactId>
 						</exclude>
 					</excludes>
-				</configuration>				
+				</configuration>
 			</plugin>
 		</plugins>
 	</build>
