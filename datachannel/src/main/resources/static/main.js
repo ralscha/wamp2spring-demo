@@ -46,6 +46,12 @@ connection.onopen = (session, details) => {
 	wampSession.subscribe('ice', iceReceived);
 };	
 
+connection.onclose = (reason, details) => {
+    if (wampSession.id) {
+    	nodes.remove(wampSession.id);
+    }
+};
+
 connection.open();
 
 const configuration = {
