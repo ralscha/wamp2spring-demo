@@ -29,6 +29,7 @@ document.getElementById('sendButton').addEventListener('click', event => {
 });
 
 let wampSession;
+let oldWampSessionId = null;
 
 connection.onopen = (session, details) => {	
 	wampSession = session;	
@@ -44,11 +45,17 @@ connection.onopen = (session, details) => {
 	wampSession.subscribe('offer', offerReceived);
 	wampSession.subscribe('answer', answerReceived);
 	wampSession.subscribe('ice', iceReceived);
+	
+	if (oldWampSessionId) {
+		wampSession.publish('peer.disconnected', [oldWampSessionId]);
+		oldWampSessionId = null;
+	}
 };	
 
 connection.onclose = (reason, details) => {
     if (wampSession.id) {
-    	nodes.remove(wampSession.id);
+    	oldWampSessionId = wampSession.id;
+    	nodes.remove(wampSession.id);    	
     }
 };
 
