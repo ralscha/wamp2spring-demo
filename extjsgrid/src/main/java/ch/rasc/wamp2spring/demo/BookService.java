@@ -16,7 +16,6 @@ import ch.rasc.wamp2spring.WampPublisher;
 import ch.rasc.wamp2spring.annotation.WampProcedure;
 import ch.rasc.wamp2spring.annotation.WampSessionId;
 
-@SuppressWarnings("null")
 @Service
 public class BookService {
 

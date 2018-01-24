@@ -5,7 +5,6 @@ import java.util.Comparator;
 import org.springframework.expression.Expression;
 import org.springframework.expression.spel.standard.SpelExpressionParser;
 
-@SuppressWarnings("null")
 public class PropertyComparator<T> implements Comparator<T> {
 	private final static SpelExpressionParser parser = new SpelExpressionParser();
 
@@ -15,7 +14,7 @@ public class PropertyComparator<T> implements Comparator<T> {
 		this.readPropertyExpression = parser.parseExpression(property);
 	}
 
-	@SuppressWarnings({ "unchecked", "unused" })
+	@SuppressWarnings({ "unchecked" })
 	@Override
 	public int compare(T o1, T o2) {
 		Object left = this.readPropertyExpression.getValue(o1);

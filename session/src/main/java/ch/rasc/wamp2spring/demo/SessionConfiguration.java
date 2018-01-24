@@ -7,10 +7,10 @@ import org.springframework.session.data.mongo.config.annotation.web.http.EnableM
 
 import com.mongodb.MongoClient;
 
-import ch.rasc.wamp2spring.session.EnableWampHttpSession;
+import ch.rasc.wamp2spring.session.servlet.EnableWampServletSession;
 
 @EnableMongoHttpSession
-@EnableWampHttpSession
+@EnableWampServletSession
 public class SessionConfiguration {
 
 	@SuppressWarnings("resource")

@@ -6,20 +6,20 @@ import org.springframework.web.socket.server.HandshakeHandler;
 
 import ch.rasc.wamp2spring.config.Feature;
 import ch.rasc.wamp2spring.config.Features;
-import ch.rasc.wamp2spring.config.PreferJsonHandshakeHandler;
-import ch.rasc.wamp2spring.config.WampConfiguration;
+import ch.rasc.wamp2spring.servlet.PreferJsonHandshakeHandler;
+import ch.rasc.wamp2spring.servlet.WampServletConfiguration;
 
 @SpringBootApplication
 //@EnableWamp(disable = Feature.DEALER)
-public class DemoApplication extends WampConfiguration {
+public class DemoApplication extends WampServletConfiguration {
 
 	public static void main(String[] args) {		
 		SpringApplication.run(DemoApplication.class, args);
 	}
 
 	@Override
-	protected void configureFeatures(Features features) {
-		features.disable(Feature.DEALER);
+	protected void configureFeatures(Features feats) {
+		feats.disable(Feature.DEALER);
 	}
 
 	@Override

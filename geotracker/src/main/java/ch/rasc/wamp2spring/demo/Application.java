@@ -5,10 +5,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-import ch.rasc.wamp2spring.config.EnableWamp;
+import ch.rasc.wamp2spring.servlet.EnableServletWamp;
 
 @SpringBootApplication
-@EnableWamp
+@EnableServletWamp
 public class Application {
 
 	public static final Logger logger = LoggerFactory.getLogger(Application.class);

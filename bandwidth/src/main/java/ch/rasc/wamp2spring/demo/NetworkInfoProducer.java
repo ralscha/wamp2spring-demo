@@ -47,7 +47,6 @@ public class NetworkInfoProducer {
 		this.isLinux = os.indexOf("linux") != -1;
 	}
 
-	@SuppressWarnings("null")
 	@Scheduled(initialDelay = 2000, fixedRate = 1000)
 	public void sendNetworkInfo() {
 		if (this.subscriptionRegistry.hasSubscribers("networkinfo")) {

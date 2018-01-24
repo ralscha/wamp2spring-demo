@@ -7,11 +7,11 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.web.socket.config.annotation.WebSocketHandlerRegistration;
 import org.springframework.web.socket.server.HandshakeHandler;
 
-import ch.rasc.wamp2spring.config.PreferJsonHandshakeHandler;
-import ch.rasc.wamp2spring.config.WampConfiguration;
+import ch.rasc.wamp2spring.servlet.PreferJsonHandshakeHandler;
+import ch.rasc.wamp2spring.servlet.WampServletConfiguration;
 
 @SpringBootApplication
-public class Application extends WampConfiguration {
+public class Application extends WampServletConfiguration {
 
 	public final static Logger logger = LoggerFactory.getLogger(Application.class);
 

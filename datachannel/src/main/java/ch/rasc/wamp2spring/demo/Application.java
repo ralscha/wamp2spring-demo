@@ -4,11 +4,11 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.web.socket.server.HandshakeHandler;
 
-import ch.rasc.wamp2spring.config.PreferJsonHandshakeHandler;
-import ch.rasc.wamp2spring.config.WampConfiguration;
+import ch.rasc.wamp2spring.servlet.PreferJsonHandshakeHandler;
+import ch.rasc.wamp2spring.servlet.WampServletConfiguration;
 
 @SpringBootApplication
-public class Application extends WampConfiguration {
+public class Application extends WampServletConfiguration {
 
 	public static void main(String[] args) {
 		SpringApplication.run(Application.class, args);
