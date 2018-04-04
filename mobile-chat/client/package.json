@@ -35,11 +35,11 @@
     "rxjs": "5.5.6",
     "sw-toolbox": "3.6.0",
     "uuid": "3.2.1",
-    "zone.js": "0.8.20"
+    "zone.js": "0.8.25"
   },
   "devDependencies": {
     "@ionic/app-scripts": "3.1.8",
-    "typescript": "2.7.2",
+    "typescript": "2.8.1",
     "webpack": "4.0.1",
     "webpack-merge": "4.1.2"
   },
