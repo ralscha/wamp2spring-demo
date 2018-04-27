@@ -20,7 +20,7 @@ export class LoginPage {
   }
 
   login(value: any) {
-    let loading = this.loadingCtrl.create({
+    const loading = this.loadingCtrl.create({
       spinner: 'bubbles',
       content: 'Logging in ...'
     });
@@ -29,10 +29,12 @@ export class LoginPage {
 
     this.authProvider
       .login(value)
-      .finally(() => loading.dismiss())
       .subscribe(
-        () => {},
-        err => this.handleError(err));
+        () => loading.dismiss(),
+        err => {
+          loading.dismiss();
+          this.handleError(err);
+        });
   }
 
   handleError(error: any) {

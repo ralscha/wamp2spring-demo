@@ -18,7 +18,7 @@ export class SignupPage {
   }
 
   signup(value: any) {
-    let loading = this.loadingCtrl.create({
+    const loading = this.loadingCtrl.create({
       spinner: 'bubbles',
       content: 'Signing up ...'
     });
@@ -27,10 +27,15 @@ export class SignupPage {
 
     this.authProvider
       .signup(value)
-      .finally(() => loading.dismiss())
       .subscribe(
-        (jwt) => this.showSuccesToast(jwt),
-        err => this.handleError(err));
+        jwt => {
+          loading.dismiss();
+          this.showSuccesToast(jwt);
+        },
+        err => {
+          loading.dismiss();
+          this.handleError(err);
+        });
   }
 
   private showSuccesToast(jwt) {

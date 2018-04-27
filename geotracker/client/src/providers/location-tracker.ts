@@ -5,7 +5,7 @@ import {
   BackgroundGeolocationResponse
 } from '@ionic-native/background-geolocation';
 import {ServerPush} from './server-push';
-import {catchError} from 'rxjs/operators/catchError';
+import {catchError} from 'rxjs/operators';
 import {EmptyObservable} from "rxjs/observable/EmptyObservable";
 
 @Injectable()
