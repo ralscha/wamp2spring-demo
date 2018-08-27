@@ -31,7 +31,7 @@
     "cordova-plugin-console": "1.1.0",
     "cordova-plugin-device": "2.0.2",
     "cordova-plugin-geolocation": "4.0.1",
-    "cordova-plugin-ionic-webview": "2.0.3",
+    "cordova-plugin-ionic-webview": "2.1.0",
     "cordova-plugin-mauron85-background-geolocation": "3.0.0-alpha.24",
     "cordova-plugin-splashscreen": "5.0.2",
     "cordova-plugin-statusbar": "2.4.2",
@@ -45,7 +45,7 @@
     "zone.js": "0.8.26"
   },
   "devDependencies": {
-    "@ionic/app-scripts": "3.1.11",
+    "@ionic/app-scripts": "3.2.0",
     "typescript": "2.7.2"
   },
   "description": "geotracker app",
