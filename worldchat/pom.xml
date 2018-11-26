@@ -49,7 +49,7 @@
 		<dependency>
 			<groupId>com.google.cloud</groupId>
 			<artifactId>google-cloud-translate</artifactId>
-			<version>1.50.0</version>
+			<version>1.53.0</version>
 			<exclusions>
 				<exclusion>
 					<groupId>joda-time</groupId>
@@ -65,19 +65,19 @@
 		<dependency>
 			<groupId>com.google.auth</groupId>
 			<artifactId>google-auth-library-credentials</artifactId>
-			<version>0.11.0</version>
+			<version>0.12.0</version>
 		</dependency>
 
 		<dependency>
 			<groupId>com.googlecode.owasp-java-html-sanitizer</groupId>
 			<artifactId>owasp-java-html-sanitizer</artifactId>
-			<version>20180219.1</version>
+			<version>20181114.1</version>
 		</dependency>
 
 		<dependency>
 			<groupId>com.google.guava</groupId>
 			<artifactId>guava</artifactId>
-			<version>27.0-jre</version>
+			<version>27.0.1-jre</version>
 		</dependency>
 
 	</dependencies>
