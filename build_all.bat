@@ -41,3 +41,4 @@ cd ..\worldchat
 call ..\mvnw.cmd clean package
 
 cd ..
+pause

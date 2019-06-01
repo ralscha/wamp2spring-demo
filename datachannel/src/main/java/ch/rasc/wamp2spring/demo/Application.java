@@ -4,10 +4,10 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.web.socket.config.annotation.WebSocketHandlerRegistration;
 
-import ch.rasc.wamp2spring.servlet.WampServletConfigurer;
+import ch.rasc.wamp2spring.servlet.WampServletConfiguration;
 
 @SpringBootApplication
-public class Application implements WampServletConfigurer {
+public class Application extends WampServletConfiguration {
 
 	public static void main(String[] args) {
 		SpringApplication.run(Application.class, args);
