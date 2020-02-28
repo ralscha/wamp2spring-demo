@@ -14,7 +14,7 @@
   </ion-navbar>
 </ion-header>
 
-<ion-content padding>
+<ion-content class="ion-padding">
   <ion-list>
     <ion-item-sliding *ngFor="let room of rooms" #slidingItem>
       <button detail-none ion-item (click)="onRoomSelected(room)" no-padding>{{room.name}}</button>
