@@ -10,7 +10,7 @@
     <ion-list>
       <ion-item>
         <ion-label floating>Name</ion-label>
-        <ion-input type="text" name="name" ngModel required #name="ngModel"
+        <ion-input type="text" name="name" ngModel [required]="true" #name="ngModel"
                    [class.invalid]="name.errors && name.dirty"></ion-input>
       </ion-item>
       <ion-item class="error-message" *ngIf="name.errors?.required && name.dirty">
@@ -19,7 +19,7 @@
 
       <ion-item>
         <ion-label floating>Email</ion-label>
-        <ion-input type="email" name="email" ngModel required email #email="ngModel"
+        <ion-input type="email" name="email" ngModel [required]="true" email #email="ngModel"
                    [class.invalid]="email.errors && email.dirty"></ion-input>
       </ion-item>
       <ion-item class="error-message" *ngIf="email.errors?.required && email.dirty">
@@ -31,7 +31,7 @@
 
       <ion-item>
         <ion-label floating>Username</ion-label>
-        <ion-input type="text" name="username" ngModel required #username="ngModel"
+        <ion-input type="text" name="username" ngModel [required]="true" #username="ngModel"
                    [class.invalid]="username.errors && username.dirty"></ion-input>
       </ion-item>
       <ion-item class="error-message" *ngIf="username.errors?.required && username.dirty">
@@ -43,7 +43,7 @@
 
       <ion-item>
         <ion-label floating>Password</ion-label>
-        <ion-input type="password" name="password" ngModel required #password="ngModel"
+        <ion-input type="password" name="password" ngModel [required]="true" #password="ngModel"
                    [class.invalid]="password.errors && password.dirty"></ion-input>
       </ion-item>
       <ion-item class="error-message" *ngIf="password.errors?.required && password.dirty">
