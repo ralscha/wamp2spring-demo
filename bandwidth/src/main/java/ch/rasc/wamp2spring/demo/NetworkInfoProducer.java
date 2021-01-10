@@ -1,6 +1,7 @@
 package ch.rasc.wamp2spring.demo;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.lang.management.ManagementFactory;
 import java.lang.management.OperatingSystemMXBean;
 import java.nio.charset.StandardCharsets;
@@ -56,15 +57,18 @@ public class NetworkInfoProducer {
 							+ this.networkInterface + "/statistics/rx_bytes");
 					Process p = pb.start();
 					p.waitFor();
-					this.rx = Long.parseLong(StringUtils.trimAllWhitespace(StreamUtils
-							.copyToString(p.getInputStream(), StandardCharsets.UTF_8)));
-
+					try (InputStream is = p.getInputStream()) {
+						this.rx = Long.parseLong(StringUtils.trimAllWhitespace(
+								StreamUtils.copyToString(is, StandardCharsets.UTF_8)));
+					}
 					pb = new ProcessBuilder("cat", "/sys/class/net/"
 							+ this.networkInterface + "/statistics/tx_bytes");
 					p = pb.start();
 					p.waitFor();
-					this.tx = Long.parseLong(StringUtils.trimAllWhitespace(StreamUtils
-							.copyToString(p.getInputStream(), StandardCharsets.UTF_8)));
+					try (InputStream is = p.getInputStream()) {
+						this.tx = Long.parseLong(StringUtils.trimAllWhitespace(
+								StreamUtils.copyToString(is, StandardCharsets.UTF_8)));
+					}
 				}
 				catch (NumberFormatException | IOException | InterruptedException e) {
 					this.rx = 0;
