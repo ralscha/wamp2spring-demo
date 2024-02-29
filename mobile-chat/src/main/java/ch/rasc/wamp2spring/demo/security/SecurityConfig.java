@@ -2,18 +2,20 @@ package ch.rasc.wamp2spring.demo.security;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.context.SecurityContextHolderFilter;
 
-import ch.rasc.wamp2spring.demo.security.jwt.JWTConfigurer;
+import ch.rasc.wamp2spring.demo.security.jwt.JWTFilter;
 import ch.rasc.wamp2spring.demo.security.jwt.TokenProvider;
 
 @Configuration
-public class SecurityConfig extends WebSecurityConfigurerAdapter {
+public class SecurityConfig {
 
 	private final TokenProvider tokenProvider;
 
@@ -22,35 +24,21 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	}
 
 	@Bean
-	@Override
-	public AuthenticationManager authenticationManagerBean() throws Exception {
-		return super.authenticationManagerBean();
-	}
-
-	@Bean
 	public PasswordEncoder passwordEncoder() {
 		return new BCryptPasswordEncoder(12);
 	}
 
-	@Override
-	protected void configure(HttpSecurity http) throws Exception {
-		// @formatter:off
-		http
-		  .csrf()
-		    .disable()
-		  .cors()
-		    .and()
-		  .sessionManagement()
-			.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-			.and()
-		  .authorizeRequests()
-		    .antMatchers("/signup").permitAll()
-		    .antMatchers("/login").permitAll()
-		    .antMatchers("/public").permitAll()
-		    .anyRequest().authenticated()
-		    .and()
-		  .apply(new JWTConfigurer(this.tokenProvider));
-		// @formatter:on
+	@Bean
+	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+		http.csrf(AbstractHttpConfigurer::disable).cors(Customizer.withDefaults())
+				.sessionManagement(
+						c -> c.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+				.authorizeHttpRequests(c -> c.requestMatchers("/signup").permitAll()
+						.requestMatchers("/login").permitAll().requestMatchers("/public")
+						.permitAll().anyRequest().authenticated())
+				.addFilterAfter(new JWTFilter(this.tokenProvider),
+						SecurityContextHolderFilter.class);
+		return http.build();
 	}
 
 }

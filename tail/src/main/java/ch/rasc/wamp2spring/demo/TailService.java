@@ -13,8 +13,6 @@ import java.util.concurrent.Executors;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import javax.annotation.PreDestroy;
-
 import org.apache.commons.io.input.Tailer;
 import org.apache.commons.io.input.TailerListenerAdapter;
 import org.slf4j.LoggerFactory;
@@ -28,6 +26,7 @@ import com.maxmind.geoip2.model.CityResponse;
 
 import ch.rasc.wamp2spring.WampPublisher;
 import eu.bitwalker.useragentutils.UserAgent;
+import jakarta.annotation.PreDestroy;
 
 @Service
 public class TailService {
@@ -114,20 +113,20 @@ public class TailService {
 							String browserVersion = ua.getBrowserVersion() != null
 									? ua.getBrowserVersion().getVersion()
 									: "";
-							if (browserVersion.equals("Unknown")) {
+							if ("Unknown".equals(browserVersion)) {
 								browserVersion = "";
 							}
 							String os = ua.getOperatingSystem() != null
 									? ua.getOperatingSystem().getName()
 									: "";
-							if (os.equals("Unknown")) {
+							if ("Unknown".equals(os)) {
 								os = "";
 							}
 							String browser = ua.getBrowser() != null
 									? ua.getBrowser().getName()
 									: "";
 
-							if (!browser.equals("Unknown")) {
+							if (!"Unknown".equals(browser)) {
 								String uaString = String.join(" ", browser,
 										browserVersion, os);
 								access.setMessage(matcher.group(4) + "; " + uaString);
@@ -157,8 +156,7 @@ public class TailService {
 			CityResponse response;
 			try {
 				try {
-					response = this.reader.city(InetAddress.getByName(ip));
-					return response;
+					return this.reader.city(InetAddress.getByName(ip));
 				}
 				catch (AddressNotFoundException e) {
 					return null;

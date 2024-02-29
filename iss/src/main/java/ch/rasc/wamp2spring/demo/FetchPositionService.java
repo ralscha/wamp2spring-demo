@@ -42,9 +42,7 @@ public class FetchPositionService {
 		try (Response response = this.client.newCall(request).execute();
 				ResponseBody body = response.body()) {
 			if (body != null) {
-				Map<String, Object> location = this.objectMapper.readValue(body.string(),
-						Map.class);
-				return location;
+				return this.objectMapper.readValue(body.string(), Map.class);
 			}
 		}
 		catch (IOException e) {

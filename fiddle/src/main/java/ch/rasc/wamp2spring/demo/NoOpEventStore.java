@@ -14,7 +14,7 @@ public class NoOpEventStore implements EventStore {
 
 	@Override
 	public void retain(PublishMessage publishMessage) {
-		
+
 	}
 
 	@Override

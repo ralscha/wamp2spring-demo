@@ -12,7 +12,7 @@ import ch.rasc.wamp2spring.servlet.WampServletConfigurer;
 @SpringBootApplication
 @EnableScheduling
 @EnableServletWamp(disable = Feature.DEALER)
-public class Application  implements WampServletConfigurer {
+public class Application implements WampServletConfigurer {
 
 	public static void main(String[] args) {
 		SpringApplication.run(Application.class, args);

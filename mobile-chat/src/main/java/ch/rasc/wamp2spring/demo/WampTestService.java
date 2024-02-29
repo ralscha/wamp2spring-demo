@@ -12,10 +12,10 @@ public class WampTestService {
 	@WampProcedure("firstcall")
 	public String firstCall(@AuthenticationPrincipal UserDetails user) {
 		System.out.println("first call");
-		System.out.println(user);	
+		System.out.println(user);
 		return "first";
 	}
-	
+
 	@WampProcedure("secondcall")
 	@RequireAdminAuthority
 	public int secondCall(@AuthenticationPrincipal UserDetails user) {
@@ -23,5 +23,5 @@ public class WampTestService {
 		System.out.println(user);
 		return 23;
 	}
-	
+
 }

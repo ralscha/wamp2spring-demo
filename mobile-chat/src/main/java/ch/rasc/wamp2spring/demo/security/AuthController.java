@@ -1,8 +1,5 @@
 package ch.rasc.wamp2spring.demo.security;
 
-import javax.servlet.http.HttpServletResponse;
-import javax.validation.Valid;
-
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -19,6 +16,8 @@ import ch.rasc.wamp2spring.demo.Application;
 import ch.rasc.wamp2spring.demo.db.User;
 import ch.rasc.wamp2spring.demo.db.UserService;
 import ch.rasc.wamp2spring.demo.security.jwt.TokenProvider;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.Valid;
 
 @RestController
 @CrossOrigin

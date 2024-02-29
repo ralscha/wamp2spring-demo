@@ -68,11 +68,9 @@ public class SnakeService {
 		Long snakeId = event.getWampSessionId();
 		if (snakeId != null) {
 			this.snakes.remove(snakeId);
-			if (this.snakes.isEmpty()) {
-				if (this.gameTimer != null) {
-					this.gameTimer.cancel();
-					this.gameTimer = null;
-				}
+			if (this.snakes.isEmpty() && (this.gameTimer != null)) {
+				this.gameTimer.cancel();
+				this.gameTimer = null;
 			}
 
 			this.wampPublisher.publishToAll("snake",

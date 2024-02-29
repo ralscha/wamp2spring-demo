@@ -123,7 +123,7 @@ public class BookDb {
 		Book book = read(id);
 
 		updatedFields.keySet().forEach(k -> {
-			if (!k.equals("id")) {
+			if (!"id".equals(k)) {
 				try {
 					FieldUtils.writeField(book, k, updatedFields.get(k), true);
 				}

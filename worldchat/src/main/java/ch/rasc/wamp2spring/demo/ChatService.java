@@ -107,7 +107,7 @@ public class ChatService {
 
 	@WampProcedure("send")
 	public void sendMessage(ChatMessage message) {
-		if (message.getType().equals("N")) {
+		if ("N".equals(message.getType())) {
 			for (String lang : this.subscribedLanguages) {
 				if (message.getLang().equals(lang)) {
 					this.wampPublisher.publishToAll("msg." + lang, message
@@ -148,26 +148,20 @@ public class ChatService {
 
 	@Nonnull
 	private SpecialMessage generateSpecialMessage(ChatMessage msg) {
-		switch (msg.getContent()) {
-		case "/sit":
-			return new SpecialMessage(getUserName(msg.getUserId()),
-					sitEmotes[randBetween(0, sitEmotes.length - 1)]);
-		case "/laugh":
-			return new SpecialMessage(getUserName(msg.getUserId()),
-					laughEmotes[randBetween(0, laughEmotes.length - 1)]);
-		case "/yawn":
-			return new SpecialMessage(getUserName(msg.getUserId()),
-					yawnEmotes[randBetween(0, yawnEmotes.length - 1)]);
-		case "/hide":
-			return new SpecialMessage(getUserName(msg.getUserId()),
-					hideEmotes[randBetween(0, hideEmotes.length - 1)]);
-		case "/scream":
-			return new SpecialMessage(getUserName(msg.getUserId()),
-					screamEmotes[randBetween(0, screamEmotes.length - 1)]);
-		default:
-			return new SpecialMessage(getUserName(msg.getUserId()),
-					"tried to do an emote that doesn't exist. Everyone point and laugh at them!");
-		}
+		return switch (msg.getContent()) {
+		case "/sit" -> new SpecialMessage(getUserName(msg.getUserId()),
+				sitEmotes[randBetween(0, sitEmotes.length - 1)]);
+		case "/laugh" -> new SpecialMessage(getUserName(msg.getUserId()),
+				laughEmotes[randBetween(0, laughEmotes.length - 1)]);
+		case "/yawn" -> new SpecialMessage(getUserName(msg.getUserId()),
+				yawnEmotes[randBetween(0, yawnEmotes.length - 1)]);
+		case "/hide" -> new SpecialMessage(getUserName(msg.getUserId()),
+				hideEmotes[randBetween(0, hideEmotes.length - 1)]);
+		case "/scream" -> new SpecialMessage(getUserName(msg.getUserId()),
+				screamEmotes[randBetween(0, screamEmotes.length - 1)]);
+		default -> new SpecialMessage(getUserName(msg.getUserId()),
+				"tried to do an emote that doesn't exist. Everyone point and laugh at them!");
+		};
 	}
 
 	private String getUserName(String id) {

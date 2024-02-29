@@ -80,8 +80,8 @@ public class BookService {
 	}
 
 	@WampProcedure("grid.destroy")
-	public void bookDestroy(List<Book> books,
-			@WampSessionId long wampSessionId) throws Throwable {
+	public void bookDestroy(List<Book> books, @WampSessionId long wampSessionId)
+			throws Throwable {
 		System.out.println("bookDestroy:" + wampSessionId);
 		for (Book book : books) {
 			BookDb.delete(book);

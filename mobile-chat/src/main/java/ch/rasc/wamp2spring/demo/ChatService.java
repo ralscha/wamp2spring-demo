@@ -69,7 +69,7 @@ public class ChatService {
 			}
 		}
 	}
-	
+
 	@EventListener
 	public void handleDeletedSubscription(WampSubscriptionDeletedEvent event) {
 		this.messages.remove(event.getSubscriptionDetail().getTopic());

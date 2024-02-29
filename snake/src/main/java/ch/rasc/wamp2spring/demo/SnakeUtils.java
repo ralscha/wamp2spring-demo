@@ -48,8 +48,7 @@ public class SnakeUtils {
 	private static int roundByGridSize(int value) {
 		int newValue = value + GRID_SIZE / 2;
 		newValue = newValue / GRID_SIZE;
-		newValue = newValue * GRID_SIZE;
-		return newValue;
+		return newValue * GRID_SIZE;
 	}
 
 }

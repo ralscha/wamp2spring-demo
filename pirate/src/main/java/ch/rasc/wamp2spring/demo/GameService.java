@@ -48,7 +48,7 @@ public class GameService {
 			player.setX(position.getX());
 			player.setY(position.getY());
 			player.setAngle(position.getAngle());
-	
+
 			this.wampPublisher.publishToAllExcept(wampSessionId, "update.players",
 					this.players.values());
 		}

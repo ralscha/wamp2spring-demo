@@ -17,10 +17,10 @@ public class Application implements WampServletConfigurer {
 	public static void main(String[] args) {
 		SpringApplication.run(Application.class, args);
 	}
-	
+
 	@Override
 	public void configureWebSocketHandlerRegistration(
 			WebSocketHandlerRegistration registration) {
 		registration.setAllowedOrigins("*");
-	}	
+	}
 }

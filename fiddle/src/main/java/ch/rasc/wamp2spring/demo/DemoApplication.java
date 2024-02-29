@@ -10,10 +10,10 @@ import ch.rasc.wamp2spring.servlet.PreferJsonHandshakeHandler;
 import ch.rasc.wamp2spring.servlet.WampServletConfiguration;
 
 @SpringBootApplication
-//@EnableWamp(disable = Feature.DEALER)
+// @EnableWamp(disable = Feature.DEALER)
 public class DemoApplication extends WampServletConfiguration {
 
-	public static void main(String[] args) {		
+	public static void main(String[] args) {
 		SpringApplication.run(DemoApplication.class, args);
 	}
 
