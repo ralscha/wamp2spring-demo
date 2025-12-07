@@ -54,7 +54,7 @@ public class ChatService {
 		String topic = event.getTopic();
 		if (topic != null) {
 			String roomId = topic.substring(5);
-			this.messages.computeIfAbsent(roomId, key -> new ArrayList<>()).add(msg);
+			this.messages.computeIfAbsent(roomId, _ -> new ArrayList<>()).add(msg);
 		}
 	}
 
