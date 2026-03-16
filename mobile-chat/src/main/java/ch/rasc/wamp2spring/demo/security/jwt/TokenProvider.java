@@ -5,89 +5,78 @@ import java.util.Base64;
 import java.util.Date;
 import java.util.UUID;
 
-import javax.crypto.SecretKey;
-
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Component;
 
+import com.auth0.jwt.JWT;
+import com.auth0.jwt.algorithms.Algorithm;
+import com.auth0.jwt.exceptions.JWTVerificationException;
+import com.auth0.jwt.exceptions.SignatureVerificationException;
+import com.auth0.jwt.exceptions.TokenExpiredException;
+import com.auth0.jwt.interfaces.DecodedJWT;
+import com.auth0.jwt.interfaces.JWTVerifier;
+
 import ch.rasc.wamp2spring.demo.AppConfig;
 import ch.rasc.wamp2spring.demo.Application;
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.ExpiredJwtException;
-import io.jsonwebtoken.Jws;
-import io.jsonwebtoken.JwtParser;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.MalformedJwtException;
-import io.jsonwebtoken.UnsupportedJwtException;
-import io.jsonwebtoken.security.Keys;
-import io.jsonwebtoken.security.SignatureException;
 
 @Component
 public class TokenProvider {
 
-	private final String secretKey;
+	private final Algorithm algorithm;
 
-	private final SecretKey hmacShaKey;
+	private final JWTVerifier verifier;
 
 	private final long tokenValidityInMilliseconds;
 
 	private final UserDetailsService userService;
 
-	private final JwtParser jwtsParser;
-
 	public TokenProvider(AppConfig config, UserDetailsService userService) {
-		this.secretKey = Base64.getEncoder()
-				.encodeToString(config.getSecret().getBytes());
-		this.hmacShaKey = Keys
-				.hmacShaKeyFor(this.secretKey.getBytes(StandardCharsets.UTF_8));
+		byte[] keyBytes = Base64.getEncoder()
+				.encodeToString(config.getSecret().getBytes()).getBytes(StandardCharsets.UTF_8);
+		this.algorithm = Algorithm.HMAC512(keyBytes);
+		this.verifier = JWT.require(this.algorithm).build();
 		this.tokenValidityInMilliseconds = 1000 * config.getTokenValidityInSeconds();
 		this.userService = userService;
-		this.jwtsParser = Jwts.parser().verifyWith(this.hmacShaKey).build();
 	}
 
 	public String createToken(String username) {
 		Date now = new Date();
 		Date validity = new Date(now.getTime() + this.tokenValidityInMilliseconds);
 
-		return Jwts.builder().id(UUID.randomUUID().toString()).subject(username)
-				.issuedAt(now).signWith(this.hmacShaKey).expiration(validity).compact();
+		return JWT.create().withJWTId(UUID.randomUUID().toString()).withSubject(username)
+				.withIssuedAt(now).withExpiresAt(validity).sign(this.algorithm);
 	}
 
-	public Authentication getAuthentication(Jws<Claims> jws) {
-		String username = jws.getPayload().getSubject();
+	public Authentication getAuthentication(DecodedJWT decoded) {
+		String username = decoded.getSubject();
 		UserDetails userDetails = this.userService.loadUserByUsername(username);
 
 		return new UsernamePasswordAuthenticationToken(userDetails, "",
 				userDetails.getAuthorities());
 	}
 
-	public Jws<Claims> validateToken(String authToken) {
+	public DecodedJWT validateToken(String authToken) {
 		try {
-			return this.jwtsParser.parseSignedClaims(authToken);
+			return this.verifier.verify(authToken);
 		}
-		catch (SignatureException e) {
+		catch (SignatureVerificationException e) {
 			Application.logger.info("Invalid JWT signature.");
 			Application.logger.trace("Invalid JWT signature trace: {}", e);
 		}
-		catch (MalformedJwtException e) {
-			Application.logger.info("Invalid JWT token.");
-			Application.logger.trace("Invalid JWT token trace: {}", e);
-		}
-		catch (ExpiredJwtException e) {
+		catch (TokenExpiredException e) {
 			Application.logger.info("Expired JWT token.");
 			Application.logger.trace("Expired JWT token trace: {}", e);
 		}
-		catch (UnsupportedJwtException e) {
-			Application.logger.info("Unsupported JWT token.");
-			Application.logger.trace("Unsupported JWT token trace: {}", e);
+		catch (JWTVerificationException e) {
+			Application.logger.info("Invalid JWT token.");
+			Application.logger.trace("Invalid JWT token trace: {}", e);
 		}
 		catch (IllegalArgumentException e) {
 			Application.logger.info("JWT token compact of handler are invalid.");
-			Application.logger.trace("JWT token compact of handler are invalid trace: {}",
-					e);
+			Application.logger.trace("JWT token compact of handler are invalid trace: {}", e);
 		}
 		return null;
 	}

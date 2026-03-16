@@ -8,13 +8,10 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.GenericFilterBean;
 
+import com.auth0.jwt.exceptions.JWTVerificationException;
+import com.auth0.jwt.interfaces.DecodedJWT;
+
 import ch.rasc.wamp2spring.demo.Application;
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.ExpiredJwtException;
-import io.jsonwebtoken.Jws;
-import io.jsonwebtoken.MalformedJwtException;
-import io.jsonwebtoken.UnsupportedJwtException;
-import io.jsonwebtoken.security.SignatureException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.ServletRequest;
@@ -43,17 +40,16 @@ public class JWTFilter extends GenericFilterBean {
 			HttpServletRequest httpServletRequest = (HttpServletRequest) servletRequest;
 			String jwt = resolveToken(httpServletRequest);
 			if (StringUtils.hasText(jwt)) {
-				Jws<Claims> jws = this.tokenProvider.validateToken(jwt);
-				if (jws != null) {
+				DecodedJWT decoded = this.tokenProvider.validateToken(jwt);
+				if (decoded != null) {
 					Authentication authentication = this.tokenProvider
-							.getAuthentication(jws);
+							.getAuthentication(decoded);
 					SecurityContextHolder.getContext().setAuthentication(authentication);
 				}
 			}
 			filterChain.doFilter(servletRequest, servletResponse);
 		}
-		catch (ExpiredJwtException | UnsupportedJwtException | MalformedJwtException
-				| SignatureException | UsernameNotFoundException e) {
+		catch (JWTVerificationException | UsernameNotFoundException e) {
 			Application.logger.info("Security exception {}", e.getMessage());
 			((HttpServletResponse) servletResponse)
 					.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
