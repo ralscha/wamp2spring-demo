@@ -6,11 +6,25 @@
 </head>
 
 <body>
-	<script src="https://omed.hplar.ch/autobahn-17.5.2.min.js"></script>
-	<script src="cbor.js"></script>
-	<script>
+	<script src="https://cdn.jsdelivr.net/npm/autobahn-browser@22.11.1/autobahn.min.js"></script>
+	<script type="module">
+		import {decode, encode} from 'https://cdn.jsdelivr.net/npm/cbor2@2.3.0/+esm';
+
 		var serverPathUrl = window.location.pathname.substring(0, window.location.pathname.lastIndexOf('/') + 1);
 		var wsURL = (window.location.protocol == "https:" ? "wss://" : "ws://") + window.location.host + serverPathUrl + "wamp";
+
+		function toUint8Array(payload) {
+			if (payload instanceof Uint8Array) {
+				return payload;
+			}
+			if (payload instanceof ArrayBuffer) {
+				return new Uint8Array(payload);
+			}
+			if (ArrayBuffer.isView(payload)) {
+				return new Uint8Array(payload.buffer, payload.byteOffset, payload.byteLength);
+			}
+			return payload;
+		}
 		
 		function CBORSerializer() {
 			this.SERIALIZER_ID = 'cbor';
@@ -22,7 +36,7 @@
 
 		CBORSerializer.prototype.serialize = function(obj) {
 			try {
-				return CBOR.encode(obj);
+				return encode(obj);
 			}
 			catch (e) {
 				autobahn.log.warn('CBOR encoding error', e);
@@ -32,7 +46,7 @@
 
 		CBORSerializer.prototype.unserialize = function(payload) {
 			try {
-				return CBOR.decode(payload);
+				return decode(toUint8Array(payload));
 			}
 			catch (e) {
 				autobahn.log.warn('CBOR decoding error', e);
@@ -45,7 +59,7 @@
 			type: 'websocket',
 			//serializers: [ new CBORSerializer() ],
 			//protocols: [ 'wamp.2.cbor' ],
-			realm: 'test'
+			realm: ''
 		});
 
 		connection.onopen = function(session, details) {
@@ -57,7 +71,7 @@
 			}
 			session.subscribe('com.myapp.hello', onevent);
 
-			session.subscribe('from_server', function(args) {
+			session.subscribe('demo.fiddle.from_server', function(args) {
 				console.log('from_server: ', args);
 			});
 
@@ -73,7 +87,7 @@
 					exclude_me: false
 				});
 
-				session.call('add', null, {
+				session.call('demo.fiddle.add', null, {
 					"a": 3,
 					"b": 10
 				}).then(function(result) {

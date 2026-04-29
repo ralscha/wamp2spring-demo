@@ -1,0 +1,59 @@
+:host {
+  display: block;
+}
+
+.home-page {
+  --background: #ffffff;
+}
+
+.hero {
+  padding: 1.5rem 1.25rem 0.75rem;
+}
+
+.hero h1 {
+  margin: 0;
+  font-size: clamp(2rem, 6vw, 3rem);
+  line-height: 1.05;
+}
+
+.lede,
+.empty-state p {
+  color: var(--ion-color-medium-shade);
+}
+
+.composer-card,
+.empty-state {
+  margin: 0 1rem 1rem;
+  padding: 1rem;
+  background: #ffffff;
+  border: 1px solid rgba(19, 82, 110, 0.16);
+}
+
+.composer-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.75rem;
+  padding: 0.75rem 0 0;
+}
+
+.rooms-list {
+  margin: 0 0.75rem 1rem;
+  background: transparent;
+}
+
+.rooms-list ion-item {
+  --border-radius: 0;
+  margin-bottom: 0.75rem;
+  --padding-top: 0.4rem;
+  --padding-bottom: 0.4rem;
+}
+
+.empty-state h2 {
+  margin-top: 0;
+}
+
+ion-text {
+  display: block;
+  margin: 0.4rem 1rem 0;
+  font-size: 0.875rem;
+}

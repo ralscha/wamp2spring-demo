@@ -1,1 +1,5 @@
-/check_dependencies.bat
+node_modules/
+dist/
+.vscode/
+.angular/
+bun.lock

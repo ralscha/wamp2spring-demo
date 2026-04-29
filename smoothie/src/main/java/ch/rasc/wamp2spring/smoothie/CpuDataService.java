@@ -29,7 +29,7 @@ public class CpuDataService {
 
 	@Scheduled(initialDelay = 3_000, fixedDelay = 1_000)
 	public void sendData() {
-		if (this.subscriptionRegistry.hasSubscribers("smoothie")) {
+		if (this.subscriptionRegistry.hasSubscribers("demo.smoothie.smoothie")) {
 			// System.out.println("SENDING DATA:"+System.currentTimeMillis());
 			Map<String, Object> data = new HashMap<>();
 			data.put("time", System.currentTimeMillis());
@@ -46,7 +46,7 @@ public class CpuDataService {
 					new double[] { this.random.nextDouble(), this.random.nextDouble(),
 							this.random.nextDouble(), this.random.nextDouble() });
 
-			this.wampPublisher.publishToAll("smoothie", data);
+			this.wampPublisher.publishToAll("demo.smoothie.smoothie", data);
 		}
 	}
 

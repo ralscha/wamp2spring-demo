@@ -27,6 +27,8 @@ import com.maxmind.geoip2.model.CityResponse;
 import ch.rasc.wamp2spring.WampPublisher;
 import eu.bitwalker.useragentutils.UserAgent;
 import jakarta.annotation.PreDestroy;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.ObjectMapper;
 
 @Service
 public class TailService {
@@ -35,6 +37,8 @@ public class TailService {
 			Pattern.CASE_INSENSITIVE | Pattern.DOTALL);
 
 	final WampPublisher wampPublisher;
+
+	private final ObjectMapper objectMapper;
 
 	public ExecutorService executor;
 
@@ -45,6 +49,7 @@ public class TailService {
 	public TailService(@Value("${geoip2.cityfile}") String cityFile,
 			@Value("${access.logs}") String accessLogs, WampPublisher wampPublisher) {
 		this.wampPublisher = wampPublisher;
+		this.objectMapper = new ObjectMapper();
 
 		String databaseFile = cityFile;
 		if (databaseFile != null) {
@@ -89,66 +94,159 @@ public class TailService {
 		@Override
 		public void handle(String line) {
 			try {
-				Matcher matcher = TailService.this.accessLogPattern.matcher(line);
+				Access access = parseJsonAccess(line);
+				if (access == null) {
+					access = parseClassicAccess(line);
+				}
 
-				if (!matcher.matches()) {
+				if (access == null) {
 					System.out.println(line);
 					return;
 				}
 
-				String ip = matcher.group(1);
-				if (!"-".equals(ip) && !"127.0.0.1".equals(ip)) {
-					CityResponse cr = lookupCity(ip);
-					if (cr != null) {
-						Access access = new Access();
-						access.setIp(ip);
-						access.setDate(Instant.now().toEpochMilli());
-						access.setCity(cr.getCity().getName());
-						access.setCountry(cr.getCountry().getName());
-
-						String userAgent = matcher.group(9);
-						UserAgent ua = UserAgent.parseUserAgentString(userAgent);
-
-						if (ua != null) {
-							String browserVersion = ua.getBrowserVersion() != null
-									? ua.getBrowserVersion().getVersion()
-									: "";
-							if ("Unknown".equals(browserVersion)) {
-								browserVersion = "";
-							}
-							String os = ua.getOperatingSystem() != null
-									? ua.getOperatingSystem().getName()
-									: "";
-							if ("Unknown".equals(os)) {
-								os = "";
-							}
-							String browser = ua.getBrowser() != null
-									? ua.getBrowser().getName()
-									: "";
-
-							if (!"Unknown".equals(browser)) {
-								String uaString = String.join(" ", browser,
-										browserVersion, os);
-								access.setMessage(matcher.group(4) + "; " + uaString);
-							}
-							else {
-								access.setMessage(matcher.group(4));
-							}
-						}
-						else {
-							access.setMessage(null);
-						}
-						access.setLl(new Double[] { cr.getLocation().getLatitude(),
-								cr.getLocation().getLongitude() });
-
-						TailService.this.wampPublisher.publishToAll("geoip", access);
-					}
-				}
+				TailService.this.wampPublisher.publishToAll("demo.tail.geoip", access);
 			}
 			catch (Exception e) {
 				e.printStackTrace();
 			}
 		}
+	}
+
+	private Access parseClassicAccess(String line) {
+		Matcher matcher = this.accessLogPattern.matcher(line);
+		if (!matcher.matches()) {
+			return null;
+		}
+
+		return createAccess(matcher.group(1), Instant.now().toEpochMilli(),
+				matcher.group(4), matcher.group(9));
+	}
+
+	private Access parseJsonAccess(String line) throws IOException {
+		String trimmedLine = line.trim();
+		if (!trimmedLine.startsWith("{")) {
+			return null;
+		}
+
+		JsonNode root = this.objectMapper.readTree(trimmedLine);
+		JsonNode request = root.path("request");
+
+		String ip = textValue(request, "remote_ip");
+		if (ip == null) {
+			ip = textValue(request, "client_ip");
+		}
+
+		String message = joinRequest(textValue(request, "method"),
+				textValue(request, "uri"));
+		if (message == null) {
+			message = textValue(root, "msg");
+		}
+
+		String userAgent = firstHeaderValue(request.path("headers"), "User-Agent");
+		long date = epochMillis(root.path("ts"));
+
+		return createAccess(ip, date, message, userAgent);
+	}
+
+	private Access createAccess(String ip, long date, String message,
+			String userAgent) {
+		if (ip == null || "-".equals(ip) || "127.0.0.1".equals(ip)) {
+			return null;
+		}
+
+		CityResponse cr = lookupCity(ip);
+		if (cr == null) {
+			return null;
+		}
+
+		Access access = new Access();
+		access.setIp(ip);
+		access.setDate(date);
+		access.setCity(cr.getCity().getName());
+		access.setCountry(cr.getCountry().getName());
+		access.setMessage(buildMessage(message, userAgent));
+		access.setLl(new Double[] { cr.getLocation().getLatitude(),
+				cr.getLocation().getLongitude() });
+		return access;
+	}
+
+	private static String buildMessage(String message, String userAgent) {
+		if (userAgent == null || userAgent.isBlank()) {
+			return message;
+		}
+
+		UserAgent ua = UserAgent.parseUserAgentString(userAgent);
+		if (ua == null) {
+			return message;
+		}
+
+		String browserVersion = ua.getBrowserVersion() != null
+				? ua.getBrowserVersion().getVersion()
+				: "";
+		if ("Unknown".equals(browserVersion)) {
+			browserVersion = "";
+		}
+
+		String os = ua.getOperatingSystem() != null ? ua.getOperatingSystem().getName()
+				: "";
+		if ("Unknown".equals(os)) {
+			os = "";
+		}
+
+		String browser = ua.getBrowser() != null ? ua.getBrowser().getName() : "";
+		if ("Unknown".equals(browser)) {
+			return message;
+		}
+
+		String uaString = String.join(" ", browser, browserVersion, os).trim()
+				.replaceAll("\\s+", " ");
+		if (message == null || message.isBlank()) {
+			return uaString;
+		}
+		return message + "; " + uaString;
+	}
+
+	private static String joinRequest(String method, String uri) {
+		if (method == null && uri == null) {
+			return null;
+		}
+		if (method == null || method.isBlank()) {
+			return uri;
+		}
+		if (uri == null || uri.isBlank()) {
+			return method;
+		}
+		return method + " " + uri;
+	}
+
+	private static String textValue(JsonNode node, String fieldName) {
+		JsonNode child = node.path(fieldName);
+		if (child.isMissingNode() || child.isNull()) {
+			return null;
+		}
+		String value = child.asText();
+		return value == null || value.isBlank() ? null : value;
+	}
+
+	private static String firstHeaderValue(JsonNode headers, String headerName) {
+		JsonNode values = headers.path(headerName);
+		if (values.isArray() && !values.isEmpty()) {
+			return values.get(0).asText();
+		}
+		if (!values.isMissingNode() && !values.isNull()) {
+			return values.asText();
+		}
+		return null;
+	}
+
+	private static long epochMillis(JsonNode tsNode) {
+		if (tsNode == null || tsNode.isMissingNode() || tsNode.isNull()) {
+			return Instant.now().toEpochMilli();
+		}
+		if (tsNode.isNumber()) {
+			return (long) (tsNode.asDouble() * 1000);
+		}
+		return Instant.now().toEpochMilli();
 	}
 
 	public CityResponse lookupCity(String ip) {

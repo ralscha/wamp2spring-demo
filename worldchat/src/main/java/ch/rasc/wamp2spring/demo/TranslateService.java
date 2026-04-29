@@ -24,10 +24,11 @@ public class TranslateService {
 
 	public TranslateService(AppConfig appConfig) throws IOException {
 		this.appConfig = appConfig;
+		String credentialsPath = appConfig.getCredentialsPath();
 
-		if (appConfig.getCredentialsPath() != null) {
+		if (credentialsPath != null && !credentialsPath.trim().isEmpty()) {
 			ServiceAccountCredentials credentials = ServiceAccountCredentials.fromStream(
-					Files.newInputStream(Paths.get(appConfig.getCredentialsPath())));
+					Files.newInputStream(Paths.get(credentialsPath.trim())));
 
 			this.translate = TranslateOptions.newBuilder().setCredentials(credentials)
 					.build().getService();

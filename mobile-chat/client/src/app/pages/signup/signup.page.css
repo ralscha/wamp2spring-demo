@@ -1,0 +1,33 @@
+:host {
+  display: block;
+}
+
+.auth-page {
+  --background: #ffffff;
+}
+
+.auth-shell {
+  min-height: 100%;
+  display: grid;
+  place-items: center;
+  padding: 2rem 1.25rem;
+}
+
+.auth-card {
+  width: min(100%, 34rem);
+  border-radius: 0;
+  box-shadow: none;
+  border: 1px solid rgba(25, 71, 52, 0.16);
+}
+
+.actions {
+  display: grid;
+  gap: 0.75rem;
+  margin-top: 1.5rem;
+}
+
+ion-text {
+  display: block;
+  margin: 0.4rem 1rem 0;
+  font-size: 0.875rem;
+}

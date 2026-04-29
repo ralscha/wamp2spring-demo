@@ -7,11 +7,12 @@ window.onload = function() {
 	var wsURL = (window.location.protocol == "https:" ? "wss://" : "ws://") + window.location.host + serverPathUrl + "wamp";
 
 	const connection = new autobahn.Connection({
-		url: wsURL
+		url: wsURL,
+		realm: ''
 	});	
 	
 	connection.onopen = function(session, details) {
-		session.subscribe("networkinfo", function(arg, argkw) {
+		session.subscribe("demo.bandwidth.networkinfo", function(arg, argkw) {
 			update(argkw);
 		});
 	};			

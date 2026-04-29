@@ -2,7 +2,8 @@ const serverPathUrl = window.location.pathname.substring(0, window.location.path
 const wsURL = (window.location.protocol == 'https:' ? 'wss://' : 'ws://') + window.location.host + serverPathUrl + 'wamp';
 
 const connection = new autobahn.Connection({
-	url: wsURL
+	url: wsURL,
+	realm: ''
 });
 
 const peers = new Map();
@@ -42,9 +43,9 @@ connection.onopen = (session, details) => {
 	wampSession.subscribe('peer.disconnected', peerDisconnected); 
 	wampSession.publish('peer.connected', [wampSession.id]);
 	
-	wampSession.subscribe('offer', offerReceived);
-	wampSession.subscribe('answer', answerReceived);
-	wampSession.subscribe('ice', iceReceived);
+	wampSession.subscribe('demo.datachannel.offer', offerReceived);
+	wampSession.subscribe('demo.datachannel.answer', answerReceived);
+	wampSession.subscribe('demo.datachannel.ice', iceReceived);
 	
 	if (oldWampSessionId) {
 		wampSession.publish('peer.disconnected', [oldWampSessionId]);
@@ -53,7 +54,7 @@ connection.onopen = (session, details) => {
 };	
 
 connection.onclose = (reason, details) => {
-    if (wampSession.id) {
+	if (wampSession && wampSession.id) {
     	oldWampSessionId = wampSession.id;
     	nodes.remove(wampSession.id);    	
     }
@@ -64,9 +65,60 @@ connection.open();
 const configuration = {
   iceServers: [{ urls: 'stun:stun.stunprotocol.org:3478' }] 
 }; 
+
+function toSessionDescriptionPayload(description) {
+	return {
+		type: description.type,
+		sdp: description.sdp
+	};
+}
+
+function createSessionDescriptionMessage(peerKey, description) {
+	return {
+		from: wampSession.id,
+		to: peerKey,
+		description: toSessionDescriptionPayload(description)
+	};
+}
+
+function fromSessionDescriptionPayload(payload) {
+	return {
+		type: payload.type,
+		sdp: payload.sdp
+	};
+}
+
+function toIceCandidatePayload(candidate) {
+	return {
+		candidate: candidate.candidate,
+		sdpMid: candidate.sdpMid,
+		sdpMLineIndex: candidate.sdpMLineIndex,
+		usernameFragment: candidate.usernameFragment
+	};
+}
+
+function fromIceCandidatePayload(payload) {
+	return {
+		candidate: payload.candidate,
+		sdpMid: payload.sdpMid,
+		sdpMLineIndex: payload.sdpMLineIndex,
+		usernameFragment: payload.usernameFragment
+	};
+}
+
+function createIceCandidateMessage(peerKey, candidate) {
+	return {
+		from: wampSession.id,
+		to: peerKey,
+		candidate: toIceCandidatePayload(candidate)
+	};
+}
  
 function peerConnected(arg) {
 	const peerKey = arg[0];	
+	if (peerKey === wampSession.id) {
+		return;
+	}
 	
 	const rtcPeerConnection = new RTCPeerConnection(configuration);
 	rtcPeerConnection.onicecandidate = onIceCandidate.bind(rtcPeerConnection, peerKey);
@@ -77,8 +129,8 @@ function peerConnected(arg) {
 	dataChannel.onmessage = onDataChannelMessage.bind(dataChannel, peerKey);
 		
 	rtcPeerConnection.createOffer()
-	  .then(offer => rtcPeerConnection.setLocalDescription(offer))
-	  .then(() => wampSession.publish('offer', [wampSession.id, rtcPeerConnection.localDescription], {}, {eligible: [peerKey]}))
+	  .then(offer => rtcPeerConnection.setLocalDescription(offer)
+		.then(() => wampSession.publish('demo.datachannel.offer', [createSessionDescriptionMessage(peerKey, offer)], {}, {eligible: [peerKey]})))
 	  .catch(reason => console.log(reason));
 	
 	
@@ -102,8 +154,15 @@ function peerDisconnected(arg) {
 }
 
 function offerReceived(arg) {
-	const peerKey = arg[0];
-	const offer = arg[1];
+	const message = arg[0];
+	if (!message || message.to !== wampSession.id || !message.description) {
+		return;
+	}
+	const peerKey = message.from;
+	if (peerKey === wampSession.id) {
+		return;
+	}
+	const offer = fromSessionDescriptionPayload(message.description);
 	let dataChannel;
 	
 	let rtcPeerConnection = new RTCPeerConnection(configuration);
@@ -118,16 +177,23 @@ function offerReceived(arg) {
 	
 	rtcPeerConnection.setRemoteDescription(offer)
 	.then(() => rtcPeerConnection.createAnswer())
-    .then(answer => rtcPeerConnection.setLocalDescription(answer))
-	.then(() => wampSession.publish('answer', [wampSession.id, rtcPeerConnection.localDescription], {}, {eligible: [peerKey]}))
+	.then(answer => rtcPeerConnection.setLocalDescription(answer)
+		.then(() => wampSession.publish('demo.datachannel.answer', [createSessionDescriptionMessage(peerKey, answer)], {}, {eligible: [peerKey]})))
 	.catch(reason => console.log(reason));	
 
 	peers.set(peerKey, {rtcPeerConnection});
 }
 
 function answerReceived(arg) {
-	const peerKey = arg[0];
-	const answer = arg[1];
+	const message = arg[0];
+	if (!message || message.to !== wampSession.id || !message.description) {
+		return;
+	}
+	const peerKey = message.from;
+	if (peerKey === wampSession.id) {
+		return;
+	}
+	const answer = fromSessionDescriptionPayload(message.description);
 	const peer = peers.get(peerKey);
 	if (peer) {
 		peer.rtcPeerConnection.setRemoteDescription(answer);
@@ -135,8 +201,15 @@ function answerReceived(arg) {
 }
 
 function iceReceived(arg) {
-	const peerKey = arg[0];
-	const ice = arg[1];
+	const message = arg[0];
+	if (!message || message.to !== wampSession.id || !message.candidate) {
+		return;
+	}
+	const peerKey = message.from;
+	if (peerKey === wampSession.id) {
+		return;
+	}
+	const ice = fromIceCandidatePayload(message.candidate);
 	const peer = peers.get(peerKey);
 	if (peer) {
 		peer.rtcPeerConnection.addIceCandidate(ice);
@@ -172,7 +245,7 @@ function handleChannelStatusChange(peerKey, event) {
 
 function onIceCandidate(peerKey, event) {
     if (event.candidate) { 
-    	wampSession.publish('ice', [wampSession.id, event.candidate], {}, {eligible: [peerKey]})
+	    	wampSession.publish('demo.datachannel.ice', [createIceCandidateMessage(peerKey, event.candidate)], {}, {eligible: [peerKey]})
     } 
 }
 

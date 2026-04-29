@@ -1,0 +1,16 @@
+@import '@ionic/angular/css/core.css';
+@import '@ionic/angular/css/normalize.css';
+@import '@ionic/angular/css/structure.css';
+@import '@ionic/angular/css/typography.css';
+@import '@ionic/angular/css/display.css';
+
+:root {
+  color-scheme: light dark;
+}
+
+body {
+  margin: 0;
+  background:
+    radial-gradient(circle at top, rgba(44, 90, 160, 0.18), transparent 36%),
+    linear-gradient(180deg, #f4f8fb 0%, #dfe9f1 100%);
+}

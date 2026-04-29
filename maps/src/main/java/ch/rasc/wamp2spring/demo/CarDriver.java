@@ -15,10 +15,9 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StreamUtils;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-
 import ch.rasc.wamp2spring.WampPublisher;
 import ch.rasc.wamp2spring.pubsub.SubscriptionRegistry;
+import tools.jackson.databind.ObjectMapper;
 
 @Service
 public class CarDriver {

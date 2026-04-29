@@ -9,7 +9,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -37,7 +36,6 @@ public class NetworkInfoProducer {
 	@Value("${bandwidth.network.interface}")
 	private String networkInterface;
 
-	@Autowired
 	public NetworkInfoProducer(WampPublisher wampPublisher,
 			SubscriptionRegistry subscriptionRegistry) {
 		this.subscriptionRegistry = subscriptionRegistry;
@@ -45,12 +43,12 @@ public class NetworkInfoProducer {
 		OperatingSystemMXBean operatingSystemMXBean = ManagementFactory
 				.getOperatingSystemMXBean();
 		String os = operatingSystemMXBean.getName().toLowerCase();
-		this.isLinux = os.indexOf("linux") != -1;
+		this.isLinux = os.contains("linux");
 	}
 
 	@Scheduled(initialDelay = 2000, fixedRate = 1000)
 	public void sendNetworkInfo() {
-		if (this.subscriptionRegistry.hasSubscribers("networkinfo")) {
+		if (this.subscriptionRegistry.hasSubscribers("demo.bandwidth.networkinfo")) {
 			if (this.isLinux) {
 				try {
 					ProcessBuilder pb = new ProcessBuilder("cat", "/sys/class/net/"
@@ -71,21 +69,24 @@ public class NetworkInfoProducer {
 					}
 				}
 				catch (NumberFormatException | IOException | InterruptedException e) {
-					this.rx = 0;
-					this.tx = 0;
+					incrementRandomTraffic();
 				}
 			}
 			else {
-				this.rx += this.rand.nextInt(512 * 1024);
-				this.tx += this.rand.nextInt(512 * 1024);
+				incrementRandomTraffic();
 			}
 
 			Map<String, Long> info = new HashMap<>();
 			info.put("rec", this.rx);
 			info.put("snd", this.tx);
 
-			this.wampPublisher.publishToAll("networkinfo", info);
+			this.wampPublisher.publishToAll("demo.bandwidth.networkinfo", info);
 		}
+	}
+
+	private void incrementRandomTraffic() {
+		this.rx += this.rand.nextInt(512 * 1024);
+		this.tx += this.rand.nextInt(512 * 1024);
 	}
 
 }

@@ -1,48 +1,39 @@
 {
-  "name": "chat",
-  "version": "0.0.1",
-  "author": "sr",
-  "homepage": "http://ionicframework.com/",
-  "private": true,
+  "name": "mobile-chat",
+  "version": "0.0.0",
   "scripts": {
-    "clean": "ionic-app-scripts clean",
-    "build": "ionic-app-scripts build",
-    "lint": "ionic-app-scripts lint",
-    "ionic:build": "ionic-app-scripts build",
-    "ionic:serve": "ionic-app-scripts serve"
+    "ng": "ng",
+    "start": "ng serve",
+    "build": "ng build",
+    "watch": "ng build --watch --configuration development",
+    "format": "npx prettier --write .",
+    "lint": "ng lint"
   },
-  "config": {
-    "ionic_webpack": "./webpack.config.js",
-    "ionic_copy": "./copy.config.js"
-  },
+  "private": true,
+  "packageManager": "bun@1.3.13",
   "dependencies": {
-    "@angular/common": "5.2.10",
-    "@angular/compiler": "5.2.10",
-    "@angular/compiler-cli": "5.2.10",
-    "@angular/core": "5.2.10",
-    "@angular/forms": "5.2.10",
-    "@angular/http": "5.2.10",
-    "@angular/platform-browser": "5.2.10",
-    "@angular/platform-browser-dynamic": "5.2.10",
-    "@auth0/angular-jwt": "1.1.0",
-    "@ionic-native/core": "4.17.0",
-    "@ionic-native/splash-screen": "4.17.0",
-    "@ionic-native/status-bar": "4.17.0",
-    "@ionic/storage": "2.2.0",
-    "ionic-angular": "3.9.9",
-    "ionicons": "3.0.0",
-    "ng2-validation": "4.2.0",
-    "rxjs": "6.3.3",
-    "rxjs-compat": "6.3.3",
-    "sw-toolbox": "3.6.0",
-    "uuid": "3.4.0",
-    "zone.js": "0.8.26"
+    "@angular/common": "21.2.10",
+    "@angular/compiler": "21.2.10",
+    "@angular/core": "21.2.10",
+    "@angular/forms": "21.2.10",
+    "@angular/platform-browser": "21.2.10",
+    "@angular/router": "21.2.10",
+    "@ionic/angular": "8.8.4",
+    "autobahn-browser": "22.11.1",
+    "rxjs": "7.8.2",
+    "tslib": "2.8.1"
   },
   "devDependencies": {
-    "@ionic/app-scripts": "3.2.4",
-    "typescript": "2.7.2",
-    "webpack": "4.6.0",
-    "webpack-merge": "4.1.2"
-  },
-  "description": "An Ionic project"
+    "@angular-eslint/builder": "21.3.1",
+    "@angular/build": "21.2.8",
+    "@angular/cli": "21.2.8",
+    "@angular/compiler-cli": "21.2.10",
+    "@eslint/js": "10.0.1",
+    "angular-eslint": "21.3.1",
+    "eslint": "10.2.1",
+    "prettier": "3.8.3",
+    "typescript": "5.9.3",
+    "typescript-eslint": "8.59.1",
+    "@ionic/angular-toolkit": "latest"
+  }
 }

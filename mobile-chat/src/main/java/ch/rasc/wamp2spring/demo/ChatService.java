@@ -30,22 +30,30 @@ public class ChatService {
 		this.wampPublisher = wampPublisher;
 	}
 
-	@WampProcedure("readRooms")
+	@WampProcedure("demo.mobilechat.readRooms")
 	@RequireAdminAuthority
 	public Collection<Room> readRooms() {
 		return this.rooms.values();
 	}
 
-	@WampProcedure("newRoom")
+	@WampProcedure("demo.mobilechat.newRoom")
 	@RequireAdminAuthority
 	public void newRoom(Room room) {
 		this.rooms.put(room.getId(), room);
 	}
 
-	@WampProcedure("removeRoom")
+	@WampProcedure("demo.mobilechat.removeRoom")
 	@RequireAdminAuthority
 	public void newRoom(String id) {
 		this.rooms.remove(id);
+	}
+
+	@WampProcedure("demo.mobilechat.sendMessage")
+	@RequireAdminAuthority
+	public void sendMessage(String roomId, Message message) {
+		this.messages.computeIfAbsent(roomId, _ -> new ArrayList<>()).add(message);
+		this.wampPublisher.publish(this.wampPublisher.publishMessageBuilder("chat." + roomId)
+				.notExcludeMe().addArgument(message).build());
 	}
 
 	@WampListener(topic = "chat", match = MatchPolicy.PREFIX)

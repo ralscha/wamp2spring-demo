@@ -15,7 +15,7 @@
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>3.5.11</version>
+		<version>4.0.6</version>
 		<relativePath />
 	</parent>
 
@@ -25,59 +25,43 @@
 		<java.version>25</java.version>
 	</properties>
 
-	<repositories>
-		<repository>
-			<id>sonatype</id>
-			<name>sonatype</name>
-			<url>https://oss.sonatype.org/content/groups/public</url>
-			<snapshots>
-				<enabled>true</enabled>
-			</snapshots>
-			<releases>
-				<enabled>true</enabled>
-			</releases>
-		</repository>
-	</repositories>
-
 	<dependencies>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-websocket</artifactId>
-			<exclusions>
-				<exclusion>
-					<groupId>org.springframework.boot</groupId>
-					<artifactId>spring-boot-starter-tomcat</artifactId>
-				</exclusion>
-			</exclusions>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-jetty</artifactId>
 		</dependency>
 
 		<dependency>
 			<groupId>ch.rasc</groupId>
 			<artifactId>wamp2spring-servlet</artifactId>
-			<version>3.0.1</version>
+			<version>4.0.0-SNAPSHOT</version>
 		</dependency>
 
 		<dependency>
 			<groupId>ch.rasc</groupId>
 			<artifactId>wamp2spring-session-servlet</artifactId>
-			<version>3.0.1</version>
+			<version>4.0.0-SNAPSHOT</version>
 		</dependency>
 
 		<dependency>
 			<groupId>org.springframework.session</groupId>
 			<artifactId>spring-session-data-mongodb</artifactId>
+			<version>4.0.0-M2</version>
 		</dependency>
 		<dependency>
-			<groupId>org.mongodb</groupId>
-			<artifactId>mongodb-driver-sync</artifactId>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-data-mongodb</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-docker-compose</artifactId>
+			<scope>runtime</scope>
+			<optional>true</optional>
 		</dependency>
 
 	</dependencies>
@@ -89,9 +73,6 @@
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
-				<configuration>
-					<executable>true</executable>
-				</configuration>
 			</plugin>
 		</plugins>
 	</build>

@@ -1,0 +1,19 @@
+:host {
+  display: block;
+}
+
+.write-message-modal {
+  --background: #ffffff;
+}
+
+.composer {
+  display: grid;
+  gap: 0.75rem;
+  padding: 1rem;
+}
+
+ion-text {
+  display: block;
+  margin: 0 1rem;
+  font-size: 0.875rem;
+}

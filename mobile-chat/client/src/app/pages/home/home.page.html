@@ -1,0 +1,59 @@
+<ion-header translucent="true">
+  <ion-toolbar>
+    <ion-title>Chatrooms</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="showAddRoom()" [disabled]="addRoomMode()">Add room</ion-button>
+      <ion-button (click)="logout()" fill="clear">Logout</ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="home-page">
+  <section class="hero">
+    <h1>Welcome back, {{ username() ?? 'guest' }}</h1>
+    <p class="lede">Pick a room or create a new one. Rooms update live across connected clients.</p>
+  </section>
+
+  @if (addRoomMode()) {
+    <section class="composer-card">
+      <ion-item>
+        <ion-label position="stacked">New Room</ion-label>
+        <ion-input [formControl]="roomNameControl" maxlength="60" placeholder="Launch room" />
+      </ion-item>
+      @if (roomNameControl.touched && roomNameControl.hasError('required')) {
+        <ion-text color="danger">Room name is required.</ion-text>
+      }
+      <div class="composer-actions">
+        <ion-button fill="clear" (click)="cancelAddRoom()">Cancel</ion-button>
+        <ion-button (click)="createRoom()">Create room</ion-button>
+      </div>
+    </section>
+  }
+
+  @if (hasRooms()) {
+    <ion-list class="rooms-list">
+      @for (room of rooms(); track room.id) {
+        <ion-item button detail="true" (click)="openRoom(room)">
+          <ion-label>
+            <h2>{{ room.name }}</h2>
+            <p>Tap to join the conversation</p>
+          </ion-label>
+          <ion-button
+            slot="end"
+            fill="clear"
+            color="danger"
+            (click)="$event.stopPropagation(); removeRoom(room)"
+          >
+            Delete
+          </ion-button>
+        </ion-item>
+      }
+    </ion-list>
+  } @else {
+    <section class="empty-state">
+      <h2>No rooms yet</h2>
+      <p>Create the first room to start chatting.</p>
+      <ion-note>Rooms are synchronized through the backend WAMP topic.</ion-note>
+    </section>
+  }
+</ion-content>

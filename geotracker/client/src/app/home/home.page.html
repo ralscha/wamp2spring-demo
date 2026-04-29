@@ -1,0 +1,117 @@
+<ion-header translucent="true">
+  <ion-toolbar>
+    <ion-title>GeoTracker</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <section class="hero">
+    <h1>Live geolocation streaming</h1>
+    <p class="summary">
+      Track location updates, stream them to your backend, and monitor recent samples from a
+      streamlined Angular and Ionic interface.
+    </p>
+
+    <div class="status-row">
+      <ion-badge [color]="locationTracker.tracking() ? 'success' : 'medium'">
+        {{ trackingLabel() }}
+      </ion-badge>
+      <ion-note>Endpoint: {{ serverUrl }}</ion-note>
+    </div>
+  </section>
+
+  <section class="actions">
+    <ion-button
+      expand="block"
+      size="large"
+      (click)="start()"
+      [disabled]="locationTracker.tracking()"
+    >
+      Start Tracking
+    </ion-button>
+    <ion-button
+      expand="block"
+      size="large"
+      color="medium"
+      (click)="stop()"
+      [disabled]="!locationTracker.tracking()"
+    >
+      Stop Tracking
+    </ion-button>
+    <ion-button expand="block" size="large" fill="outline" (click)="clear()">
+      Clear Data
+    </ion-button>
+  </section>
+
+  <ion-card>
+    <ion-card-content>
+      <p class="section-label">Tracker status</p>
+      <p class="status-copy">{{ locationTracker.status() }}</p>
+      @if (!locationTracker.supportsGeolocation()) {
+        <ion-note color="danger">This environment does not expose navigator.geolocation.</ion-note>
+      }
+      @if (locationTracker.lastError(); as error) {
+        <p class="error-copy">{{ error }}</p>
+      }
+    </ion-card-content>
+  </ion-card>
+
+  <ion-card>
+    <ion-card-content>
+      <p class="section-label">Latest position</p>
+      @if (locationTracker.lastPosition(); as position) {
+        <div class="metrics-grid">
+          <div>
+            <span>Latitude</span>
+            <strong>{{ position.latitude | number: '1.4-6' }}</strong>
+          </div>
+          <div>
+            <span>Longitude</span>
+            <strong>{{ position.longitude | number: '1.4-6' }}</strong>
+          </div>
+          <div>
+            <span>Accuracy</span>
+            <strong>{{ position.accuracy ?? 0 | number: '1.0-0' }} m</strong>
+          </div>
+          <div>
+            <span>Speed</span>
+            <strong>{{ position.speed ?? 0 | number: '1.0-2' }} m/s</strong>
+          </div>
+        </div>
+        <ion-note>Captured {{ position.time | date: 'medium' }}</ion-note>
+      } @else {
+        <p class="empty-copy">No location has been captured yet.</p>
+      }
+    </ion-card-content>
+  </ion-card>
+
+  <ion-card>
+    <ion-card-content>
+      <p class="section-label">Recent samples</p>
+      @if (locationTracker.recentPositions().length) {
+        <ion-list lines="none">
+          @for (position of locationTracker.recentPositions(); track position.time) {
+            <ion-item>
+              <ion-label>
+                <h2>
+                  {{ position.latitude | number: '1.4-6' }},
+                  {{ position.longitude | number: '1.4-6' }}
+                </h2>
+                <p>{{ position.time | date: 'mediumTime' }}</p>
+              </ion-label>
+            </ion-item>
+          }
+        </ion-list>
+      } @else {
+        <p class="empty-copy">Start tracking to populate the activity feed.</p>
+      }
+    </ion-card-content>
+  </ion-card>
+
+  <section class="footnote">
+    <ion-note>
+      Background geolocation beyond an active browser session requires a native mobile integration,
+      such as a Capacitor or Android-specific plugin.
+    </ion-note>
+  </section>
+</ion-content>

@@ -417,11 +417,12 @@ window.onload = function() {
 	var wsURL = (window.location.protocol == "https:" ? "wss://" : "ws://") + window.location.host + serverPathUrl + "wamp";
 
 	const connection = new autobahn.Connection({
-		url: wsURL
+		url: wsURL,
+		realm: ''
 	});	
 	
 	connection.onopen = function(session, details) {
-		session.subscribe("geoip", function(arg, argkw) {
+		session.subscribe("demo.tail.geoip", function(arg, argkw) {
 			var geo = arg[0];
 			setTimeout(function() {
 				if (geo.ll) {

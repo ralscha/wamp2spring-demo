@@ -1,0 +1,42 @@
+<ion-header translucent="true">
+  <ion-toolbar>
+    <ion-title>Mobile Chat</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="auth-page">
+  <section class="auth-shell">
+    <ion-card class="auth-card">
+      <ion-card-header>
+        <ion-card-title>Sign in to your workspace</ion-card-title>
+      </ion-card-header>
+
+      <ion-card-content>
+        <form [formGroup]="form" (ngSubmit)="login()" novalidate>
+          <ion-item>
+            <ion-label position="stacked">Username</ion-label>
+            <ion-input formControlName="username" autocomplete="username" />
+          </ion-item>
+          @if (controlHasError('username', 'required')) {
+            <ion-text color="danger">Username is required.</ion-text>
+          }
+
+          <ion-item>
+            <ion-label position="stacked">Password</ion-label>
+            <ion-input formControlName="password" type="password" autocomplete="current-password" />
+          </ion-item>
+          @if (controlHasError('password', 'required')) {
+            <ion-text color="danger">Password is required.</ion-text>
+          }
+
+          <div class="actions">
+            <ion-button type="submit" expand="block">Log in</ion-button>
+            <ion-button routerLink="/signup" expand="block" fill="outline"
+              >Create account</ion-button
+            >
+          </div>
+        </form>
+      </ion-card-content>
+    </ion-card>
+  </section>
+</ion-content>

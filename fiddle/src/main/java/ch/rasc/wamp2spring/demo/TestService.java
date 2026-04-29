@@ -22,7 +22,7 @@ public class TestService {
 		this.wampEventPublisher = wampEventPublisher;
 	}
 
-	@WampProcedure("add")
+	@WampProcedure("demo.fiddle.add")
 	public int add(int a, int b) {
 		return a + b;
 	}
@@ -79,7 +79,7 @@ public class TestService {
 	public void eventListener(String arg) {
 		System.out.println(arg);
 
-		this.wampEventPublisher.publishToAll("from_server", 23);
+		this.wampEventPublisher.publishToAll("demo.fiddle.from_server", 23);
 	}
 
 }

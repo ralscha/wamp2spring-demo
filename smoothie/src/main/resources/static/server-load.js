@@ -4,11 +4,12 @@ function init() {
 	var wsURL = (window.location.protocol == "https:" ? "wss://" : "ws://") + window.location.host + serverPathUrl + "wamp";
 
 	var connection = new autobahn.Connection({
-		url: wsURL
+		url: wsURL,
+		realm: ''
 	});
 	
 	connection.onopen = function(session, details) {
-		session.subscribe('smoothie', handleResponse);
+		session.subscribe('demo.smoothie.smoothie', handleResponse);
 		
 		initHost('host1');
 		initHost('host2');

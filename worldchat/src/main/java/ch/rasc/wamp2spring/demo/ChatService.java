@@ -76,7 +76,7 @@ public class ChatService {
 		if (userId != null) {
 			ChatUser user = this.connectedUsers.remove(userId);
 			if (user != null) {
-				this.wampPublisher.publishToAll("special",
+				this.wampPublisher.publishToAll("demo.worldchat.special",
 						new SpecialMessage(user.getName(), "disconnected"));
 			}
 		}
@@ -90,12 +90,12 @@ public class ChatService {
 		}
 	}
 
-	@WampProcedure("connect")
+	@WampProcedure("demo.worldchat.connect")
 	public void connect(ChatUser user, @WampSessionId long wampSessionId) {
 		this.wampSessionToUserId.put(wampSessionId, user.getId());
 		this.connectedUsers.put(user.getId(), user);
 
-		this.wampPublisher.publishToAll("special",
+		this.wampPublisher.publishToAll("demo.worldchat.special",
 				new SpecialMessage(user.getName(), "connected"));
 
 	}
@@ -105,7 +105,7 @@ public class ChatService {
 		return this.connectedUsers;
 	}
 
-	@WampProcedure("send")
+	@WampProcedure("demo.worldchat.send")
 	public void sendMessage(ChatMessage message) {
 		if ("N".equals(message.getType())) {
 			for (String lang : this.subscribedLanguages) {
@@ -122,7 +122,7 @@ public class ChatService {
 			}
 		}
 		else {
-			this.wampPublisher.publishToAll("special", generateSpecialMessage(message));
+			this.wampPublisher.publishToAll("demo.worldchat.special", generateSpecialMessage(message));
 		}
 	}
 

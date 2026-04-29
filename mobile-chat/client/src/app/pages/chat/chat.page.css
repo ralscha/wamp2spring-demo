@@ -1,0 +1,46 @@
+:host {
+  display: block;
+}
+
+.chat-page {
+  --background: #ffffff;
+}
+
+.empty-state {
+  margin: 1rem;
+  padding: 1.25rem;
+  background: #ffffff;
+  border: 1px solid rgba(28, 56, 81, 0.16);
+}
+
+.message-list {
+  display: grid;
+  gap: 0.85rem;
+  padding: 1rem;
+}
+
+.message-card {
+  max-width: min(34rem, 86%);
+  padding: 0.95rem 1rem;
+  background: #ffffff;
+  border: 1px solid rgba(28, 56, 81, 0.08);
+}
+
+.message-card--self {
+  justify-self: end;
+  background: #ffffff;
+}
+
+.message-card header {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 0.5rem;
+  font-size: 0.82rem;
+  color: var(--ion-color-medium-shade);
+}
+
+.message-card p {
+  margin: 0;
+  line-height: 1.45;
+}

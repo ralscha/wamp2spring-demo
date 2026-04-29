@@ -8,7 +8,6 @@ In the source column you find a link to the original repository.
 | bandwidth | Displays received and sent bytes of the server network interface (eth0). The server sends this information periodically to all connected browsers. | [GitHub](https://github.com/pesarkhobeee/Realtime-Bandwidth-Grapher) | 
 | datachannel  | Establish RTCPeerConnection connections and send data over DataChannels. WAMP is used for the signalling process (WebRTC dance) |        | 
 | earthquake | The server reads data from the <a href="https://earthquake.usgs.gov/">Earthquake Hazards Program</a> and sends it periodically to the clients. | [GitHub](https://github.com/bijukunjummen/si-spring-websockets) | 
-| extjsgrid |  An Ext JS 6.5.1 application with a model that uses a WAMP proxy. Create, update and delete operations are broadcasted to all connected clients.  |        |
 | gauge | Server sends periodically random data to all connected browsers where the data is displayed with the gauge diagram from the [echarts](https://ecomfe.github.io/echarts-doc/public/en/index.html) library. |        | 
 | iss | The server reads periodically the position of the International Space Station from api.open-notify.org and sends the location to all connected browsers. |        | 
 | maps | Server sends periodically coordinates to all connected clients that move two car icons on a Google Maps. |        | 

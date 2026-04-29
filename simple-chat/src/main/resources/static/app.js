@@ -2,11 +2,12 @@ var serverPathUrl = window.location.pathname.substring(0, window.location.pathna
 var wsURL = (window.location.protocol == "https:" ? "wss://" : "ws://") + window.location.host + serverPathUrl + "wamp";
 
 var connection = new autobahn.Connection({
-	url: wsURL
+	url: wsURL,
+	realm: ''
 });
 var mySession;
 connection.onopen = function(session, details) {
-	session.subscribe('chat', onChatMessage);
+	session.subscribe('demo.simplechat.chat', onChatMessage);
 	mySession = session;
 };
 connection.open();
@@ -35,7 +36,7 @@ function sendMessage() {
 			sentAt: new Date().toLocaleTimeString()
 		};
 
-		mySession.publish('chat', null, message);
+		mySession.publish('demo.simplechat.chat', null, message);
 		show(message, true);
 		msgInput.value = '';
 	}

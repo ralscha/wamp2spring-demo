@@ -67,7 +67,8 @@ var currentMsgSubscription;
 
 var wsSession;
 var connection = new autobahn.Connection({
-	url: wsURL
+	url: wsURL,
+	realm: ''
 });
 connection.onopen = function(session, details) {
 	wsSession = session;
@@ -78,7 +79,7 @@ connection.onopen = function(session, details) {
 		console.log('subscription error: ', error);
 	});
 	
-	wsSession.subscribe('special', function(arg) {
+	wsSession.subscribe('demo.worldchat.special', function(arg) {
 		handleSpecial(arg[0]);
 	});
 	
@@ -90,7 +91,7 @@ connection.onopen = function(session, details) {
 		handleChangeName(arg[0], arg[1]);
 	});
 
-	wsSession.call('connect', [ {id:user.id, name:user.name, icon:user.icon} ]).then(function(result) {
+	wsSession.call('demo.worldchat.connect', [ {id:user.id, name:user.name, icon:user.icon} ]).then(function(result) {
 		wsSession.call('list.users').then(function(users) {
 			connectedUsers = users;
 		});
@@ -123,7 +124,7 @@ function postChat() {
 		type: (content[0] == "/" ? 'S' : 'N')
 	}
 
-	wsSession.call('send', [msg]);
+	wsSession.call('demo.worldchat.send', [msg]);
 	chatInput.value = "";
 }
 
@@ -178,17 +179,44 @@ function handleChangeName(userId, name) {
 
 }
 
-function updateChatUI(msg) {
-	var msgUser;
+function refreshConnectedUsers() {
+	if (!wsSession) {
+		return;
+	}
+
+	wsSession.call('list.users').then(function(users) {
+		connectedUsers = users;
+	});
+}
+
+function resolveMessageUser(msg) {
 	if (msg.userId === 'HelpBot') {
-		msgUser = {
+		return {
+			id: 'HelpBot',
 			name: 'HelpBot',
 			icon: 'robot.png'
 		};
 	}
-	else {
-		msgUser = connectedUsers[msg.userId];
+
+	if (connectedUsers[msg.userId]) {
+		return connectedUsers[msg.userId];
 	}
+
+	if (msg.userId === user.id) {
+		return user;
+	}
+
+	refreshConnectedUsers();
+
+	return {
+		id: msg.userId,
+		name: msg.userId,
+		icon: 'robot.png'
+	};
+}
+
+function updateChatUI(msg) {
+	var msgUser = resolveMessageUser(msg);
 	
 	var chatArea = document.getElementsByClassName('chat-area')[0];
 

@@ -31,7 +31,7 @@
 	margin: 0;
 }
 </style>
-<script src="https://omed.hplar.ch/autobahn-17.5.2.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/autobahn-browser@22.11.1/autobahn.min.js"></script>
 </head>
 <body>
 	<div style="float: left">
@@ -175,7 +175,8 @@
         	var wsURL = (window.location.protocol == "https:" ? "wss://" : "ws://") + window.location.host + serverPathUrl + "wamp";
 
         	var connection = new autobahn.Connection({
-        		url: wsURL
+            		url: wsURL,
+            		realm: ''
         	});
         	
         	connection.onopen = function(session, details) {
@@ -185,7 +186,7 @@
                 Console.log('Info: Press an arrow key to begin.');
                 Game.startGameLoop();    		
         		        		
-        		session.subscribe('snake', function(arg) {
+                session.subscribe('demo.snake.snake', function(arg) {
         			var packet = arg[0];
 
                     switch (packet.type) {

@@ -1,0 +1,26 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Write Message</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="dismiss()" fill="clear">Cancel</ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="write-message-modal">
+  <form class="composer">
+    <ion-item>
+      <ion-label position="stacked">New Message</ion-label>
+      <ion-textarea
+        [formControl]="messageControl"
+        maxlength="500"
+        autoGrow="true"
+        placeholder="Write something useful"
+      />
+    </ion-item>
+    @if (messageControl.touched && messageControl.hasError('required')) {
+      <ion-text color="danger">A message is required.</ion-text>
+    }
+    <ion-button type="button" expand="block" (click)="sendMessage()">Send</ion-button>
+  </form>
+</ion-content>

@@ -27,12 +27,12 @@ public class DataEmitterService {
 
 	@Scheduled(initialDelay = 2_000, fixedRate = 1_000)
 	public void sendData() {
-		if (this.subscriptionRegistry.hasSubscribers("data")) {
+		if (this.subscriptionRegistry.hasSubscribers("demo.reactive.data")) {
 			List<Integer> data = new ArrayList<>();
 			for (int i = 0; i < 5; i++) {
 				data.add(random.nextInt(31));
 			}
-			this.wampPublisher.publishToAll("data", data);
+			this.wampPublisher.publishToAll("demo.reactive.data", data);
 		}
 	}
 

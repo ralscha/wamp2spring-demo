@@ -59,12 +59,12 @@ public class Snake {
 
 	private synchronized void kill(WampPublisher wampPublisher) {
 		resetState();
-		wampPublisher.publishToAll("snake", SnakeMessage.createDeadMessage());
+		wampPublisher.publishToAll("demo.snake.snake", SnakeMessage.createDeadMessage());
 	}
 
 	private synchronized void reward(WampPublisher wampPublisher) {
 		this.length++;
-		wampPublisher.publishToAll("snake", SnakeMessage.createKillMessage());
+		wampPublisher.publishToAll("demo.snake.snake", SnakeMessage.createKillMessage());
 	}
 
 	public synchronized void update(Collection<Snake> snakes,

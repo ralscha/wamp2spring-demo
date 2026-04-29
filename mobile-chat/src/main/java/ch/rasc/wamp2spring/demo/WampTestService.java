@@ -9,14 +9,14 @@ import ch.rasc.wamp2spring.annotation.WampProcedure;
 @Service
 public class WampTestService {
 
-	@WampProcedure("firstcall")
+	@WampProcedure("demo.mobilechat.firstcall")
 	public String firstCall(@AuthenticationPrincipal UserDetails user) {
 		System.out.println("first call");
 		System.out.println(user);
 		return "first";
 	}
 
-	@WampProcedure("secondcall")
+	@WampProcedure("demo.mobilechat.secondcall")
 	@RequireAdminAuthority
 	public int secondCall(@AuthenticationPrincipal UserDetails user) {
 		System.out.println("second call");

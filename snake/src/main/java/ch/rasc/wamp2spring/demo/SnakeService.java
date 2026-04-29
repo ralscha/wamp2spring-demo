@@ -59,7 +59,7 @@ public class SnakeService {
 		}
 		this.snakes.put(newSnake.getId(), newSnake);
 
-		this.wampPublisher.publishToAll("snake",
+		this.wampPublisher.publishToAll("demo.snake.snake",
 				SnakeMessage.createJoinMessage(createJoinData()));
 	}
 
@@ -73,7 +73,7 @@ public class SnakeService {
 				this.gameTimer = null;
 			}
 
-			this.wampPublisher.publishToAll("snake",
+			this.wampPublisher.publishToAll("demo.snake.snake",
 					SnakeMessage.createLeaveMessage(snakeId));
 		}
 	}
@@ -102,7 +102,7 @@ public class SnakeService {
 		}
 
 		if (!updateData.isEmpty()) {
-			this.wampPublisher.publishToAll("snake",
+			this.wampPublisher.publishToAll("demo.snake.snake",
 					SnakeMessage.createUpdateMessage(updateData));
 		}
 	}

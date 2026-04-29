@@ -69,11 +69,12 @@ const serverPathUrl = window.location.pathname.substring(0, window.location.path
 const wsURL = (window.location.protocol == "https:" ? "wss://" : "ws://") + window.location.host + serverPathUrl + "wamp";
 
 const connection = new autobahn.Connection({
-	url: wsURL
+	url: wsURL,
+	realm: ''
 });
 
 connection.onopen = function(session, details) {
-	session.subscribe('data', handleResponse);
+	session.subscribe('demo.reactive.data', handleResponse);
 };
 
 connection.open();

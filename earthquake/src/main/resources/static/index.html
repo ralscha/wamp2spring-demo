@@ -3,7 +3,7 @@
 <head>
 <title>Earthquake in the last hour..</title>
 <link rel="stylesheet"
-	href="https://stackpath.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+	href="https://cdn.jsdelivr.net/npm/bootstrap@3.4.1/dist/css/bootstrap.min.css">
 <style>
 body {
 	font-family: tahoma, verdana, arial, sans-serif;
@@ -11,7 +11,7 @@ body {
 }
 </style>
 
-<script src="https://omed.hplar.ch/autobahn-17.5.2.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/autobahn-browser@22.11.1/autobahn.min.js"></script>
 
 </head>
 <body>
@@ -45,14 +45,15 @@ body {
 			const wsURL = (window.location.protocol == "https:" ? "wss://" : "ws://") + window.location.host + serverPathUrl + "wamp";
 
 			const connection = new autobahn.Connection({
-				url: wsURL
+				url: wsURL,
+				realm: ''
 			});
 
 			connection.onopen = function(session, details) {
-				session.call('initialload').then(function(arg) {
+				session.call('demo.earthquake.initialload').then(function(arg) {
 					showQuakeInfo(arg);					
 				});
-				session.subscribe("earthquakes", function(arg) {
+				session.subscribe("demo.earthquake.earthquakes", function(arg) {
 					showQuakeInfo(arg[0]);
 				});
 			};			

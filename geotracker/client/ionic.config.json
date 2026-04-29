@@ -1,8 +1,6 @@
 {
-  "name": "geotracker",
+  "name": "ionic-app",
   "app_id": "",
-  "type": "ionic-angular",
-  "integrations": {
-    "cordova": {}
-  }
+  "type": "angular-standalone",
+  "integrations": {}
 }

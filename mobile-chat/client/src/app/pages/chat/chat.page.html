@@ -1,0 +1,32 @@
+<ion-header translucent="true">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-button (click)="backToRooms()" fill="clear">Rooms</ion-button>
+    </ion-buttons>
+    <ion-title>{{ room()?.name ?? 'Chat room' }}</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="compose()">Compose</ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="chat-page">
+  @if (sortedMessages().length === 0) {
+    <section class="empty-state">
+      <h2>No messages yet</h2>
+      <p>Start the conversation and new messages will stream in live.</p>
+    </section>
+  } @else {
+    <section class="message-list">
+      @for (message of sortedMessages(); track message.ts + ':' + message.sender) {
+        <article class="message-card" [class.message-card--self]="isOwnMessage(message)">
+          <header>
+            <strong>{{ message.sender }}</strong>
+            <span>{{ formatTimestamp(message.ts) }}</span>
+          </header>
+          <p>{{ message.msg }}</p>
+        </article>
+      }
+    </section>
+  }
+</ion-content>

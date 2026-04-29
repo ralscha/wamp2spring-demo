@@ -27,7 +27,8 @@ public class Application extends WampServletConfiguration {
 	@Override
 	public void configureWebSocketHandlerRegistration(
 			WebSocketHandlerRegistration registration) {
-		registration.setAllowedOrigins("http://localhost:8100");
+		registration.setAllowedOrigins("http://localhost:8100",
+				"http://localhost:4200", "http://127.0.0.1:4200");
 	}
 
 }

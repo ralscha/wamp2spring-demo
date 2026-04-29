@@ -30,12 +30,12 @@ public class GeoController {
 		this.stationaries = new ArrayList<>();
 	}
 
-	@WampProcedure("getPositions")
+	@WampProcedure("demo.geotracker.getPositions")
 	public List<Position> getPositions() {
 		return this.positions;
 	}
 
-	@WampProcedure("getStationaries")
+	@WampProcedure("demo.geotracker.getStationaries")
 	public List<Stationary> getStationaries() {
 		return this.stationaries;
 	}
@@ -46,13 +46,13 @@ public class GeoController {
 		this.stationaries.clear();
 		this.positions.clear();
 
-		this.wampPublisher.publishToAll("clear");
+		this.wampPublisher.publishToAll("demo.geotracker.clear");
 	}
 
 	@PostMapping("/pos")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void handleLocation(@RequestBody Position position) {
-		this.wampPublisher.publishToAll("pos", position);
+		this.wampPublisher.publishToAll("demo.geotracker.pos", position);
 
 		this.positions.add(position);
 		if (this.positions.size() > 100) {
@@ -63,7 +63,7 @@ public class GeoController {
 	@PostMapping("/stationary")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void handleStationary(@RequestBody Stationary stationary) {
-		this.wampPublisher.publishToAll("stationary", stationary);
+		this.wampPublisher.publishToAll("demo.geotracker.stationary", stationary);
 
 		this.stationaries.add(stationary);
 		if (this.stationaries.size() > 10) {

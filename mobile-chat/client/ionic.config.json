@@ -1,5 +1,6 @@
 {
-  "name": "chat",
-  "type": "ionic-angular",
+  "name": "ionic-app",
+  "app_id": "",
+  "type": "angular-standalone",
   "integrations": {}
 }
