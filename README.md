@@ -1,6 +1,6 @@
-Collection of example [wamp2spring](https://github.com/ralscha/wamp2spring) applications that show you the capabilities of WAMP and the library.
+Collection of example [wamp2spring](https://github.com/ralscha/wamp2spring) applications that show the capabilities of WAMP and the library.
 Not everything is developed by me. I found examples on the internet, replaced the connection part
-with [autobahn-js](https://github.com/crossbario/autobahn-js) and the server part with a [Spring 5](http://projects.spring.io/spring-framework/) / [Spring Boot 2](http://projects.spring.io/spring-boot/) application.
+with [autobahn-js](https://github.com/crossbario/autobahn-js) and the server part with a Spring Framework 7 / Spring Boot 4 application.
 In the source column you find a link to the original repository.
 
 | Project | Description | Source | 
