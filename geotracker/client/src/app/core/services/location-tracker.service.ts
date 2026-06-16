@@ -208,12 +208,12 @@ export class LocationTrackerService {
     const startLongitude = (longitude * Math.PI) / 180;
 
     const projectedLatitude = Math.asin(
-      Math.sin(startLatitude) * Math.cos(angularDistance)
-        + Math.cos(startLatitude) * Math.sin(angularDistance) * Math.cos(bearing),
+      Math.sin(startLatitude) * Math.cos(angularDistance) +
+        Math.cos(startLatitude) * Math.sin(angularDistance) * Math.cos(bearing),
     );
     const projectedLongitude =
-      startLongitude
-      + Math.atan2(
+      startLongitude +
+      Math.atan2(
         Math.sin(bearing) * Math.sin(angularDistance) * Math.cos(startLatitude),
         Math.cos(angularDistance) - Math.sin(startLatitude) * Math.sin(projectedLatitude),
       );

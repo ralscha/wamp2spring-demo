@@ -86,8 +86,9 @@ export class WampService {
   }
 
   async subscribeRooms(handler: (event: RoomEvent) => void): Promise<AutobahnSubscription> {
-    return this.requireSession().subscribe<unknown[], RoomEvent>('demo.mobilechat.rooms', (_args, kwargs) =>
-      handler(kwargs),
+    return this.requireSession().subscribe<unknown[], RoomEvent>(
+      'demo.mobilechat.rooms',
+      (_args, kwargs) => handler(kwargs),
     );
   }
 
