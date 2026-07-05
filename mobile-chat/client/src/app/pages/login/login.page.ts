@@ -1,5 +1,5 @@
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
-import { ReactiveFormsModule, Validators, NonNullableFormBuilder } from '@angular/forms';
+import { Component, inject, signal } from '@angular/core';
+import { FormField, FormRoot, form, required } from '@angular/forms/signals';
 import { Router, RouterLink } from '@angular/router';
 import {
   IonButton,
@@ -20,12 +20,14 @@ import {
 } from '@ionic/angular/standalone';
 import { firstValueFrom } from 'rxjs';
 
+import { LoginRequest } from '../../models/auth.models';
 import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-login-page',
   imports: [
-    ReactiveFormsModule,
+    FormField,
+    FormRoot,
     RouterLink,
     IonButton,
     IonCard,
@@ -43,23 +45,25 @@ import { AuthService } from '../../services/auth.service';
   ],
   templateUrl: './login.page.html',
   styleUrl: './login.page.css',
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class LoginPage {
-  private readonly formBuilder = inject(NonNullableFormBuilder);
   private readonly authService = inject(AuthService);
   private readonly router = inject(Router);
   private readonly loadingController = inject(LoadingController);
   private readonly toastController = inject(ToastController);
 
-  protected readonly form = this.formBuilder.group({
-    username: ['', [Validators.required]],
-    password: ['', [Validators.required]],
+  private readonly model = signal<LoginRequest>({
+    username: '',
+    password: '',
+  });
+  protected readonly form = form(this.model, (path) => {
+    required(path.username);
+    required(path.password);
   });
 
   async login(): Promise<void> {
-    if (this.form.invalid) {
-      this.form.markAllAsTouched();
+    if (this.form().invalid()) {
+      this.form().markAsTouched();
       return;
     }
 
@@ -70,7 +74,7 @@ export class LoginPage {
     await loading.present();
 
     try {
-      await firstValueFrom(this.authService.login(this.form.getRawValue()));
+      await firstValueFrom(this.authService.login(this.form().value()));
       await this.router.navigateByUrl('/home');
     } catch (error: unknown) {
       await this.presentToast(this.getErrorMessage(error));
@@ -80,8 +84,8 @@ export class LoginPage {
   }
 
   protected controlHasError(controlName: 'username' | 'password', errorName: string): boolean {
-    const control = this.form.controls[controlName];
-    return control.touched && control.hasError(errorName);
+    const field = this.form[controlName]();
+    return field.touched() && field.getError(errorName) !== undefined;
   }
 
   private getErrorMessage(error: unknown): string {

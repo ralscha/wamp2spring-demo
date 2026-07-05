@@ -12,10 +12,10 @@
       </ion-card-header>
 
       <ion-card-content>
-        <form [formGroup]="form" (ngSubmit)="login()" novalidate>
+        <form [formRoot]="form" (submit)="login()">
           <ion-item>
             <ion-label position="stacked">Username</ion-label>
-            <ion-input formControlName="username" autocomplete="username" />
+            <ion-input [formField]="form.username" autocomplete="username" />
           </ion-item>
           @if (controlHasError('username', 'required')) {
             <ion-text color="danger">Username is required.</ion-text>
@@ -23,7 +23,11 @@
 
           <ion-item>
             <ion-label position="stacked">Password</ion-label>
-            <ion-input formControlName="password" type="password" autocomplete="current-password" />
+            <ion-input
+              [formField]="form.password"
+              type="password"
+              autocomplete="current-password"
+            />
           </ion-item>
           @if (controlHasError('password', 'required')) {
             <ion-text color="danger">Password is required.</ion-text>

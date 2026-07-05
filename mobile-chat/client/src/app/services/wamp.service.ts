@@ -1,11 +1,11 @@
-import { Injectable } from '@angular/core';
+import { Service } from '@angular/core';
 import autobahn from 'autobahn-browser';
 
 import { APP_ENVIRONMENT } from '../models/app-environment';
 import { Message } from '../models/message';
 import { Room, RoomEvent } from '../models/room';
 
-@Injectable({ providedIn: 'root' })
+@Service()
 export class WampService {
   private connection: AutobahnConnection | null = null;
   private session: AutobahnSession | null = null;

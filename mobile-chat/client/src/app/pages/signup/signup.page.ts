@@ -1,5 +1,5 @@
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
-import { ReactiveFormsModule, Validators, NonNullableFormBuilder } from '@angular/forms';
+import { Component, inject, signal } from '@angular/core';
+import { FormField, FormRoot, email, form, required } from '@angular/forms/signals';
 import { Router, RouterLink } from '@angular/router';
 import {
   IonButton,
@@ -20,12 +20,14 @@ import {
 } from '@ionic/angular/standalone';
 import { firstValueFrom } from 'rxjs';
 
+import { SignupRequest } from '../../models/auth.models';
 import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-signup-page',
   imports: [
-    ReactiveFormsModule,
+    FormField,
+    FormRoot,
     RouterLink,
     IonButton,
     IonCard,
@@ -43,25 +45,33 @@ import { AuthService } from '../../services/auth.service';
   ],
   templateUrl: './signup.page.html',
   styleUrl: './signup.page.css',
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SignupPage {
-  private readonly formBuilder = inject(NonNullableFormBuilder);
   private readonly authService = inject(AuthService);
   private readonly router = inject(Router);
   private readonly loadingController = inject(LoadingController);
   private readonly toastController = inject(ToastController);
 
-  protected readonly form = this.formBuilder.group({
-    name: ['', [Validators.required]],
-    email: ['', [Validators.required, Validators.email]],
-    username: ['', [Validators.required]],
-    password: ['', [Validators.required]],
+  private readonly model = signal<SignupRequest>({
+    name: '',
+    email: '',
+    username: '',
+    password: '',
+  });
+  protected readonly usernameTaken = signal(false);
+  protected readonly form = form(this.model, (path) => {
+    required(path.name);
+    required(path.email);
+    email(path.email);
+    required(path.username);
+    required(path.password);
   });
 
   async signup(): Promise<void> {
-    if (this.form.invalid) {
-      this.form.markAllAsTouched();
+    this.usernameTaken.set(false);
+
+    if (this.form().invalid()) {
+      this.form().markAsTouched();
       return;
     }
 
@@ -72,10 +82,11 @@ export class SignupPage {
     await loading.present();
 
     try {
-      const result = await firstValueFrom(this.authService.signup(this.form.getRawValue()));
+      const result = await firstValueFrom(this.authService.signup(this.form().value()));
 
       if (result === 'exists') {
-        this.form.controls.username.setErrors({ usernameTaken: true });
+        this.form.username().markAsTouched();
+        this.usernameTaken.set(true);
         await this.presentToast('Username already registered');
         return;
       }
@@ -93,8 +104,8 @@ export class SignupPage {
     controlName: 'name' | 'email' | 'username' | 'password',
     errorName: string,
   ): boolean {
-    const control = this.form.controls[controlName];
-    return control.touched && control.hasError(errorName);
+    const field = this.form[controlName]();
+    return field.touched() && field.getError(errorName) !== undefined;
   }
 
   private async presentToast(message: string): Promise<void> {

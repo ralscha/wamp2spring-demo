@@ -1,9 +1,9 @@
-import { Injectable, computed, inject, signal } from '@angular/core';
+import { Service, computed, inject, signal } from '@angular/core';
 
 import { Position } from '../models/position.model';
 import { ServerPushService } from './server-push.service';
 
-@Injectable({ providedIn: 'root' })
+@Service()
 export class LocationTrackerService {
   private readonly serverPush = inject(ServerPushService);
   private readonly simulationIntervalMs = 5000;
@@ -122,11 +122,6 @@ export class LocationTrackerService {
     });
   }
 
-  private async handleGeolocationError(error: GeolocationPositionError | unknown): Promise<void> {
-    const message = this.describeGeolocationError(error);
-    await this.startSimulatedTracking(message);
-  }
-
   private async startSimulatedTracking(reason: string): Promise<void> {
     if (this.watchId !== null && typeof navigator !== 'undefined' && 'geolocation' in navigator) {
       navigator.geolocation.clearWatch(this.watchId);
@@ -242,12 +237,6 @@ export class LocationTrackerService {
 
   private randomInRange(min: number, max: number): number {
     return Math.random() * (max - min) + min;
-  }
-
-  private async reportError(message: string): Promise<void> {
-    this.lastError.set(message);
-    this.status.set(message);
-    await this.serverPush.pushError(message);
   }
 
   private describeGeolocationError(error: GeolocationPositionError | unknown): string {

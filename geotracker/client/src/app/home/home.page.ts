@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
+import { Component, computed, inject } from '@angular/core';
 import { DatePipe, DecimalPipe } from '@angular/common';
 import {
   IonBadge,
@@ -38,7 +38,6 @@ import { ServerPushService } from '../core/services/server-push.service';
   ],
   templateUrl: './home.page.html',
   styleUrl: './home.page.css',
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class HomePage {
   private readonly serverPush = inject(ServerPushService);

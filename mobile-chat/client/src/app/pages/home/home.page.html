@@ -15,19 +15,19 @@
   </section>
 
   @if (addRoomMode()) {
-    <section class="composer-card">
+    <form class="composer-card" [formRoot]="roomNameForm" (submit)="createRoom()">
       <ion-item>
         <ion-label position="stacked">New Room</ion-label>
-        <ion-input [formControl]="roomNameControl" maxlength="60" placeholder="Launch room" />
+        <ion-input [formField]="roomNameForm" maxlength="60" placeholder="Launch room" />
       </ion-item>
-      @if (roomNameControl.touched && roomNameControl.hasError('required')) {
+      @if (roomNameForm().touched() && roomNameForm().getError('required')) {
         <ion-text color="danger">Room name is required.</ion-text>
       }
       <div class="composer-actions">
         <ion-button fill="clear" (click)="cancelAddRoom()">Cancel</ion-button>
-        <ion-button (click)="createRoom()">Create room</ion-button>
+        <ion-button type="submit">Create room</ion-button>
       </div>
-    </section>
+    </form>
   }
 
   @if (hasRooms()) {

@@ -1,13 +1,4 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  NgZone,
-  OnDestroy,
-  OnInit,
-  computed,
-  inject,
-  signal,
-} from '@angular/core';
+import { Component, NgZone, OnDestroy, OnInit, computed, inject, signal } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import {
   IonButton,
@@ -31,7 +22,6 @@ import { WriteMessageModalComponent } from './write-message-modal.component';
   imports: [IonButton, IonButtons, IonContent, IonHeader, IonTitle, IonToolbar],
   templateUrl: './chat.page.html',
   styleUrl: './chat.page.css',
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ChatPage implements OnInit, OnDestroy {
   private readonly route = inject(ActivatedRoute);

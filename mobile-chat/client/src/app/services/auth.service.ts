@@ -1,5 +1,5 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { computed, inject, Injectable, signal } from '@angular/core';
+import { Service, computed, inject, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { map, Observable, take, tap } from 'rxjs';
 
@@ -7,7 +7,7 @@ import { APP_ENVIRONMENT } from '../models/app-environment';
 import { JwtPayload, LoginRequest, SignupRequest } from '../models/auth.models';
 import { WampService } from './wamp.service';
 
-@Injectable({ providedIn: 'root' })
+@Service()
 export class AuthService {
   private readonly httpClient = inject(HttpClient);
   private readonly router = inject(Router);

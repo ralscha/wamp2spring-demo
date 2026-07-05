@@ -1,14 +1,5 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  NgZone,
-  OnDestroy,
-  OnInit,
-  computed,
-  inject,
-  signal,
-} from '@angular/core';
-import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
+import { Component, NgZone, OnDestroy, OnInit, computed, inject, signal } from '@angular/core';
+import { FormField, FormRoot, form, maxLength, required } from '@angular/forms/signals';
 import { Router } from '@angular/router';
 import {
   IonButton,
@@ -33,7 +24,8 @@ import { WampService } from '../../services/wamp.service';
 @Component({
   selector: 'app-home-page',
   imports: [
-    ReactiveFormsModule,
+    FormField,
+    FormRoot,
     IonButton,
     IonButtons,
     IonContent,
@@ -49,7 +41,6 @@ import { WampService } from '../../services/wamp.service';
   ],
   templateUrl: './home.page.html',
   styleUrl: './home.page.css',
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class HomePage implements OnInit, OnDestroy {
   private readonly authService = inject(AuthService);
@@ -63,9 +54,10 @@ export class HomePage implements OnInit, OnDestroy {
 
   protected readonly rooms = signal<Room[]>([]);
   protected readonly addRoomMode = signal(false);
-  protected readonly roomNameControl = new FormControl('', {
-    nonNullable: true,
-    validators: [Validators.required, Validators.maxLength(60)],
+  private readonly roomName = signal('');
+  protected readonly roomNameForm = form(this.roomName, (path) => {
+    required(path);
+    maxLength(path, 60);
   });
   protected readonly hasRooms = computed(() => this.rooms().length > 0);
   protected readonly username = this.authService.user;
@@ -104,21 +96,19 @@ export class HomePage implements OnInit, OnDestroy {
   }
 
   protected cancelAddRoom(): void {
-    this.roomNameControl.setValue('');
-    this.roomNameControl.markAsPristine();
-    this.roomNameControl.markAsUntouched();
+    this.roomNameForm().reset('');
     this.addRoomMode.set(false);
   }
 
   protected async createRoom(): Promise<void> {
-    if (this.roomNameControl.invalid) {
-      this.roomNameControl.markAsTouched();
+    if (this.roomNameForm().invalid()) {
+      this.roomNameForm().markAsTouched();
       return;
     }
 
     const room: Room = {
       id: crypto.randomUUID(),
-      name: this.roomNameControl.getRawValue().trim(),
+      name: this.roomNameForm().value().trim(),
     };
 
     try {

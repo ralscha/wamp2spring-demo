@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { IonApp, IonRouterOutlet } from '@ionic/angular/standalone';
 
 import { AuthService } from './services/auth.service';
@@ -8,7 +8,6 @@ import { AuthService } from './services/auth.service';
   imports: [IonApp, IonRouterOutlet],
   templateUrl: './app.html',
   styleUrl: './app.css',
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class App {
   private readonly authService = inject(AuthService);

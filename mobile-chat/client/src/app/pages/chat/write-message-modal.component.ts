@@ -1,5 +1,5 @@
-import { ChangeDetectionStrategy, Component, Input, inject } from '@angular/core';
-import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
+import { Component, Input, inject, signal } from '@angular/core';
+import { FormField, FormRoot, form, maxLength, required } from '@angular/forms/signals';
 import {
   IonButton,
   IonButtons,
@@ -22,7 +22,8 @@ import { WampService } from '../../services/wamp.service';
 @Component({
   selector: 'app-write-message-modal',
   imports: [
-    ReactiveFormsModule,
+    FormField,
+    FormRoot,
     IonButton,
     IonButtons,
     IonContent,
@@ -36,7 +37,6 @@ import { WampService } from '../../services/wamp.service';
   ],
   templateUrl: './write-message-modal.component.html',
   styleUrl: './write-message-modal.component.css',
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class WriteMessageModalComponent {
   private readonly modalController = inject(ModalController);
@@ -47,9 +47,10 @@ export class WriteMessageModalComponent {
 
   @Input({ required: true }) user!: string;
 
-  protected readonly messageControl = new FormControl('', {
-    nonNullable: true,
-    validators: [Validators.required, Validators.maxLength(500)],
+  private readonly message = signal('');
+  protected readonly messageForm = form(this.message, (path) => {
+    required(path);
+    maxLength(path, 500);
   });
 
   protected async dismiss(): Promise<void> {
@@ -57,14 +58,14 @@ export class WriteMessageModalComponent {
   }
 
   protected async sendMessage(): Promise<void> {
-    if (this.messageControl.invalid) {
-      this.messageControl.markAsTouched();
+    if (this.messageForm().invalid()) {
+      this.messageForm().markAsTouched();
       return;
     }
 
     const message: Message = {
       ts: Date.now(),
-      msg: this.messageControl.getRawValue().trim(),
+      msg: this.messageForm().value().trim(),
       sender: this.user,
     };
 
