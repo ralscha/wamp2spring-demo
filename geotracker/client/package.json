@@ -10,7 +10,7 @@
     "lint": "ng lint"
   },
   "private": true,
-  "packageManager": "pnpm@11.11.0",
+  "packageManager": "pnpm@11.15.0",
   "dependencies": {
     "@angular/common": "22.0.7",
     "@angular/compiler": "22.0.7",
