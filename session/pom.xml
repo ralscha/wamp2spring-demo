@@ -32,13 +32,13 @@
     <dependency>
       <groupId>ch.rasc</groupId>
       <artifactId>wamp2spring-servlet</artifactId>
-      <version>4.0.0</version>
+      <version>4.0.1</version>
     </dependency>
 
     <dependency>
       <groupId>ch.rasc</groupId>
       <artifactId>wamp2spring-session-servlet</artifactId>
-      <version>4.0.0</version>
+      <version>4.0.1</version>
     </dependency>
 
     <dependency>

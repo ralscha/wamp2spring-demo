@@ -41,13 +41,13 @@
     <dependency>
       <groupId>com.auth0</groupId>
       <artifactId>java-jwt</artifactId>
-      <version>4.6.0</version>
+      <version>4.6.1</version>
     </dependency>
 
     <dependency>
       <groupId>ch.rasc</groupId>
       <artifactId>wamp2spring-security-servlet</artifactId>
-      <version>4.0.0</version>
+      <version>4.0.1</version>
     </dependency>
 
     <dependency>
