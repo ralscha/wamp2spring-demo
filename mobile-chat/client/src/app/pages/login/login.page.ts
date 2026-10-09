@@ -17,7 +17,7 @@ import {
   IonToolbar,
   LoadingController,
   ToastController,
-} from '@ionic/angular/standalone';
+} from '@ionic/angular';
 import { firstValueFrom } from 'rxjs';
 
 import { LoginRequest } from '../../models/auth.models';

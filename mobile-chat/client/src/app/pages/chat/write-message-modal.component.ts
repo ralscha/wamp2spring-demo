@@ -13,7 +13,7 @@ import {
   IonToolbar,
   ModalController,
   ToastController,
-} from '@ionic/angular/standalone';
+} from '@ionic/angular';
 
 import { Message } from '../../models/message';
 import { Room } from '../../models/room';

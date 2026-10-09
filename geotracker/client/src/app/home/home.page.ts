@@ -13,7 +13,7 @@ import {
   IonNote,
   IonTitle,
   IonToolbar,
-} from '@ionic/angular/standalone';
+} from '@ionic/angular';
 
 import { LocationTrackerService } from '../core/services/location-tracker.service';
 import { ServerPushService } from '../core/services/server-push.service';

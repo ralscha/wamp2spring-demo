@@ -15,7 +15,7 @@ import {
   IonTitle,
   IonToolbar,
   ToastController,
-} from '@ionic/angular/standalone';
+} from '@ionic/angular';
 
 import { Room, RoomEvent } from '../../models/room';
 import { AuthService } from '../../services/auth.service';
