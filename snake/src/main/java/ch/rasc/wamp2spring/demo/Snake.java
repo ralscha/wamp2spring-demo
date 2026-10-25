@@ -23,6 +23,7 @@ import java.util.Deque;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import ch.rasc.wamp2spring.WampPublisher;
 
@@ -95,12 +96,12 @@ public class Snake {
 
 	private void handleCollisions(Collection<Snake> snakes, WampPublisher WampPublisher) {
 		for (Snake snake : snakes) {
-			boolean headCollision = this.id != snake.id
+			boolean headCollision = !Objects.equals(this.id, snake.id)
 					&& snake.getHead().equals(this.head);
 			boolean tailCollision = snake.getTail().contains(this.head);
 			if (headCollision || tailCollision) {
 				kill(WampPublisher);
-				if (this.id != snake.id) {
+				if (!Objects.equals(this.id, snake.id)) {
 					snake.reward(WampPublisher);
 				}
 			}
