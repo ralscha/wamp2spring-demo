@@ -80,7 +80,7 @@
             <path>
               <groupId>org.springframework.boot</groupId>
               <artifactId>spring-boot-configuration-processor</artifactId>
-              <version>4.1.1</version>
+              <version>4.1.2</version>
             </path>
             <path>
               <groupId>com.google.code.findbugs</groupId>
